@@ -20,3 +20,25 @@ class CaptionItem(BaseModel):
     original_text: str
     source_language: str = "auto"
     # Mapping of language_code (e.g., 'en', 'ta', 'kn', 'hi') to translated text
+    translations: Dict[str, str] = Field(default_factory=dict)
+    timestamp: float = Field(default_factory=time.time)
+    is_final: bool = True
+
+class ChatMessage(BaseModel):
+    id: str
+    sender_id: str
+    sender_name: str
+    content: str
+    timestamp: float = Field(default_factory=time.time)
+
+class CreateMeetingRequest(BaseModel):
+    host_display_name: str
+
+class CreateMeetingResponse(BaseModel):
+    meeting_code: str
+    host_id: str
+
+class MeetingInfoResponse(BaseModel):
+    meeting_code: str
+    active_participants_count: int
+    created_at: float
