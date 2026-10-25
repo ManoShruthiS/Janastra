@@ -92,3 +92,97 @@ class ParticipantAudioStream:
         self.buffer.clear()
         self.is_speaking = False
         self.speech_start_time = None
+        self.last_speech_time = None
+
+        # Reset speaking indicator
+        await meeting_manager.broadcast_to_room(
+            self.meeting_code,
+            {"type": "speaker_active", "speaker_id": self.participant_id, "is_speaking": False}
+        )
+
+        duration = len(audio_bytes) / BYTES_PER_SECOND
+        if duration < MIN_AUDIO_DURATION_SEC:
+            return
+
+        # Trigger transcription in background task so audio streaming loop isn't stalled
+        asyncio.create_task(self._transcribe_and_dispatch(audio_bytes))
+
+    async def _transcribe_and_dispatch(self, pcm_data: bytes):
+        wav_data = pcm_to_wav(pcm_data, sample_rate=SAMPLE_RATE)
+        
+        # Call Gnani Prisma v3.0 REST API
+        asr_result = await gnani_client.transcribe_wav_bytes(wav_data)
+        
+        text = ""
+        source_lang = "auto"
+        if asr_result:
+            # Parse Gnani response schema
+            # Gnani STT v3 typically returns:
+            # {"transcript": "..."} or {"text": "..."} or {"data": {"transcript": "..."}}
+            text = (
+                asr_result.get("transcript")
+                or asr_result.get("text")
+                or (asr_result.get("data", {}).get("transcript") if isinstance(asr_result.get("data"), dict) else "")
+                or ""
+            )
+            source_lang = asr_result.get("language_code") or asr_result.get("language") or "auto"
+
+        if not text.strip():
+            logger.debug(f"No speech recognized for {self.display_name}")
+            return
+
+        session = meeting_manager.get_meeting(self.meeting_code)
+        if not session:
+            return
+
+        # Fetch all target languages currently selected by participants
+        target_languages = session.get_active_caption_languages()
+        
+        # Parallel translation into all active target languages
+        translations = await translation_service.translate_for_room(
+            text=text,
+            detected_source_lang=source_lang,
+            target_languages=target_languages
+        )
+
+        caption_item = CaptionItem(
+            id=str(uuid.uuid4()),
+            speaker_id=self.participant_id,
+            speaker_name=self.display_name,
+            original_text=text,
+            source_language=source_lang,
+            translations=translations,
+            timestamp=time.time(),
+            is_final=True
+        )
+
+        session.add_caption(caption_item)
+
+        # Broadcast the caption event to all participants
+        await meeting_manager.broadcast_to_room(
+            self.meeting_code,
+            {
+                "type": "caption",
+                "caption": caption_item.model_dump()
+            }
+        )
+
+class AudioProcessorManager:
+    def __init__(self):
+        self.streams: Dict[str, ParticipantAudioStream] = {}
+
+    def get_or_create_stream(self, meeting_code: str, participant_id: str, display_name: str) -> ParticipantAudioStream:
+        key = f"{meeting_code}:{participant_id}"
+        if key not in self.streams:
+            self.streams[key] = ParticipantAudioStream(meeting_code, participant_id, display_name)
+        else:
+            self.streams[key].display_name = display_name
+        return self.streams[key]
+
+    async def remove_stream(self, meeting_code: str, participant_id: str):
+        key = f"{meeting_code}:{participant_id}"
+        stream = self.streams.pop(key, None)
+        if stream:
+            await stream.flush()
+
+audio_processor_manager = AudioProcessorManager()
