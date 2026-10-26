@@ -54,3 +54,59 @@ class TranslationService:
                 return translated
         except Exception as e:
             logger.warning(f"Translation failed for '{cleaned}' from {src} to {tgt}: {e}")
+
+        return cleaned
+
+    def _execute_translation(self, text: str, src: str, tgt: str) -> str:
+        """Attempts translation with Google, falling back to MyMemory or configured provider."""
+        # 1. Try Google Translator via deep_translator
+        try:
+            from deep_translator import GoogleTranslator
+            source = "auto" if src == "auto" else src
+            translator = GoogleTranslator(source=source, target=tgt)
+            res = translator.translate(text)
+            if res and res.strip():
+                return res
+        except Exception as e:
+            logger.debug(f"GoogleTranslator attempt failed, falling back to MyMemory: {e}")
+
+        # 2. Fallback: MyMemory Translator
+        try:
+            from deep_translator import MyMemoryTranslator
+            mm_src = MYMEMORY_MAP.get(src, "en-US") if src != "auto" else "en-US"
+            mm_tgt = MYMEMORY_MAP.get(tgt, f"{tgt}-IN")
+            mm_translator = MyMemoryTranslator(source=mm_src, target=mm_tgt)
+            res = mm_translator.translate(text)
+            if res and res.strip():
+                return res
+        except Exception as e2:
+            logger.error(f"MyMemoryTranslator also failed: {e2}")
+
+        return text
+
+    async def translate_for_room(
+        self,
+        text: str,
+        detected_source_lang: str,
+        target_languages: Set[str]
+    ) -> Dict[str, str]:
+        """Translates text for all unique target languages in the meeting room."""
+        if not text.strip():
+            return {}
+
+        results: Dict[str, str] = {}
+        target_list = list(target_languages)
+
+        # Sequential translation across distinct target languages to avoid bursting free endpoints
+        for lang in target_list:
+            clean_code = lang.split("-")[0].lower()
+            try:
+                translated = await self.translate_single(text, detected_source_lang, clean_code)
+                results[clean_code] = translated
+            except Exception as e:
+                logger.error(f"Error translating for {lang}: {e}")
+                results[clean_code] = text
+
+        return results
+
+translation_service = TranslationService()
