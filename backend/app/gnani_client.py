@@ -58,3 +58,64 @@ class GnaniPrismaClient:
         }
         files = {
             "audio_file": ("speech.wav", wav_bytes, "audio/wav")
+        }
+
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                response = await client.post(url, headers=headers, data=data, files=files)
+                if response.status_code == 200:
+                    result = response.json()
+                    logger.info(f"Gnani REST response: {result}")
+                    return result
+                else:
+                    logger.error(f"Gnani API returned {response.status_code}: {response.text}")
+                    return None
+        except Exception as e:
+            logger.error(f"Error calling Gnani Prisma REST API: {e}")
+            return None
+
+    async def open_stream_session(
+        self,
+        language_code: Optional[str] = None,
+        on_transcript: Optional[Callable[[str, bool, Optional[str]], Any]] = None
+    ):
+        """
+        Connects to Gnani Prisma v3.0 WebSocket streaming endpoint (wss://api.vachana.ai/stt/v3/stream)
+        """
+        if not self.has_api_key():
+            logger.warning("Cannot start Gnani WebSocket stream: GNANI_API_KEY is not configured.")
+            return None
+
+        lang = language_code or self.language_code
+        # WebSocket upgrade headers
+        headers = {
+            "X-API-Key-ID": self.api_key,
+            "language_code": lang,
+            "model": self.model,
+            "format": "transcribe"
+        }
+
+        try:
+            ws = await websockets.connect(
+                self.ws_url,
+                extra_headers=headers,
+                ping_interval=20,
+                ping_timeout=20
+            )
+            logger.info("Connected to Gnani Prisma v3.0 WebSocket stream successfully.")
+            return ws
+        except Exception as e:
+            logger.error(f"Failed to connect to Gnani WebSocket stream: {e}")
+            return None
+
+def pcm_to_wav(pcm_data: bytes, sample_rate: int = 16000, channels: int = 1, sample_width: int = 2) -> bytes:
+    """Converts raw 16-bit PCM bytes to a valid WAV file in memory."""
+    with io.BytesIO() as wav_io:
+        with wave.open(wav_io, 'wb') as wav_file:
+            wav_file.setnchannels(channels)
+            wav_file.setsampwidth(sample_width)
+            wav_file.setframerate(sample_rate)
+            wav_file.writeframes(pcm_data)
+        return wav_io.getvalue()
+
+gnani_client = GnaniPrismaClient()
