@@ -40,3 +40,46 @@ class MeetingSession:
         # Keep transcript within memory limits (e.g. 500 lines per session)
         if len(self.transcript_history) > 500:
             self.transcript_history.pop(0)
+
+class MeetingManager:
+    def __init__(self):
+        # In-memory storage for active meetings (temporary session only)
+        self.meetings: Dict[str, MeetingSession] = {}
+
+    def create_meeting(self, host_display_name: str) -> tuple[str, str]:
+        code = generate_meeting_code()
+        while code in self.meetings:
+            code = generate_meeting_code()
+
+        host_id = f"user_{int(time.time()*1000)}_{random.randint(100, 999)}"
+        session = MeetingSession(code, host_id)
+        
+        # Add host as first participant
+        host_participant = Participant(
+            id=host_id,
+            display_name=host_display_name or "Host",
+            is_host=True
+        )
+        session.participants[host_id] = host_participant
+        self.meetings[code] = session
+        logger.info(f"Created meeting {code} with host {host_id} ({host_display_name})")
+        return code, host_id
+
+    def get_meeting(self, code: str) -> Optional[MeetingSession]:
+        return self.meetings.get(code.upper().strip())
+
+    async def register_meeting_socket(
+        self,
+        meeting_code: str,
+        participant_id: str,
+        display_name: str,
+        websocket: WebSocket
+    ) -> Optional[MeetingSession]:
+        session = self.get_meeting(meeting_code)
+        if not session:
+            # If meeting code doesn't exist yet, auto-create to allow direct joins
+            session = MeetingSession(meeting_code.upper().strip(), participant_id)
+            self.meetings[meeting_code.upper().strip()] = session
+
+        # Register or update participant
+        if participant_id not in session.participants:
