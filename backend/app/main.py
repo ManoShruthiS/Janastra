@@ -117,3 +117,63 @@ async def meeting_websocket_endpoint(
             "chat_history": chat_history,
             "is_host": session.participants[participant_id].is_host
         })
+
+        while True:
+            data = await websocket.receive_json()
+            msg_type = data.get("type")
+
+            if msg_type == "signal":
+                # WebRTC Signaling (offer / answer / ice-candidate)
+                # target_id is the recipient peer
+                target_id = data.get("target_id")
+                if target_id:
+                    await meeting_manager.send_to_participant(
+                        meeting_code_clean,
+                        target_id,
+                        {
+                            "type": "signal",
+                            "sender_id": participant_id,
+                            "signal_data": data.get("signal_data")
+                        }
+                    )
+
+            elif msg_type == "caption_pref":
+                # Participant updates their independent caption language or toggle
+                p = session.participants.get(participant_id)
+                if p:
+                    if "caption_language" in data:
+                        p.caption_language = data["caption_language"]
+                    if "caption_enabled" in data:
+                        p.caption_enabled = bool(data["caption_enabled"])
+                    # Acknowledge to sender
+                    await websocket.send_json({
+                        "type": "caption_pref_ack",
+                        "caption_language": p.caption_language,
+                        "caption_enabled": p.caption_enabled
+                    })
+
+            elif msg_type == "chat":
+                # Text chat message
+                content = data.get("content", "").strip()
+                if content:
+                    chat_msg = ChatMessage(
+                        id=str(uuid.uuid4()),
+                        sender_id=participant_id,
+                        sender_name=display_name,
+                        content=content,
+                        timestamp=time.time()
+                    )
+                    session.chat_messages.append(chat_msg)
+                    if len(session.chat_messages) > 300:
+                        session.chat_messages.pop(0)
+
+                    await meeting_manager.broadcast_to_room(
+                        meeting_code_clean,
+                        {
+                            "type": "chat",
+                            "message": chat_msg.model_dump()
+                        }
+                    )
+
+            elif msg_type == "media_state":
+                # Micro/Cam/Screen toggle notifications
