@@ -177,3 +177,63 @@ async def meeting_websocket_endpoint(
 
             elif msg_type == "media_state":
                 # Micro/Cam/Screen toggle notifications
+                p = session.participants.get(participant_id)
+                if p:
+                    if "is_muted" in data:
+                        p.is_muted = data["is_muted"]
+                    if "is_video_off" in data:
+                        p.is_video_off = data["is_video_off"]
+                    if "is_screen_sharing" in data:
+                        p.is_screen_sharing = data["is_screen_sharing"]
+
+                    await meeting_manager.broadcast_to_room(
+                        meeting_code_clean,
+                        {
+                            "type": "participant_state_updated",
+                            "participant": p.model_dump()
+                        },
+                        exclude_id=participant_id
+                    )
+
+    except WebSocketDisconnect:
+        logger.info(f"WebSocket disconnected for {participant_id} in {meeting_code_clean}")
+    except Exception as e:
+        logger.error(f"Error in meeting websocket for {participant_id}: {e}")
+    finally:
+        await meeting_manager.unregister_meeting_socket(meeting_code_clean, participant_id)
+        await audio_processor_manager.remove_stream(meeting_code_clean, participant_id)
+
+# -------------------------------------------------------------
+# WebSocket: Real-time Audio Stream from Participant to Server
+# -------------------------------------------------------------
+@app.websocket("/ws/audio/{meeting_code}/{participant_id}")
+async def audio_websocket_endpoint(
+    websocket: WebSocket,
+    meeting_code: str,
+    participant_id: str,
+    display_name: str = Query("Participant")
+):
+    await websocket.accept()
+    meeting_code_clean = meeting_code.upper().strip()
+    stream = audio_processor_manager.get_or_create_stream(
+        meeting_code_clean,
+        participant_id,
+        display_name
+    )
+
+    try:
+        while True:
+            # Client sends binary raw 16-bit 16kHz PCM chunks
+            message = await websocket.receive()
+            if "bytes" in message and message["bytes"]:
+                await stream.feed_pcm_chunk(message["bytes"])
+            elif "text" in message:
+                # Text command (e.g. flush / mute)
+                if message["text"] == "flush":
+                    await stream.flush()
+    except WebSocketDisconnect:
+        logger.debug(f"Audio socket disconnected for {participant_id}")
+    except Exception as e:
+        logger.error(f"Error in audio websocket for {participant_id}: {e}")
+    finally:
+        await stream.flush()
