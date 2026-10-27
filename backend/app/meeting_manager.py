@@ -83,3 +83,45 @@ class MeetingManager:
 
         # Register or update participant
         if participant_id not in session.participants:
+            is_first = len(session.participants) == 0
+            session.participants[participant_id] = Participant(
+                id=participant_id,
+                display_name=display_name or "Guest",
+                is_host=is_first
+            )
+        else:
+            session.participants[participant_id].display_name = display_name or session.participants[participant_id].display_name
+
+        session.meeting_sockets[participant_id] = websocket
+        logger.info(f"Participant {participant_id} ({display_name}) joined meeting {meeting_code}")
+
+        # Broadcast participant-joined to other peers
+        await self.broadcast_to_room(
+            meeting_code,
+            {
+                "type": "participant_joined",
+                "participant": session.participants[participant_id].model_dump(),
+                "all_participants": [p.model_dump() for p in session.participants.values()]
+            },
+            exclude_id=participant_id
+        )
+
+        return session
+
+    async def unregister_meeting_socket(self, meeting_code: str, participant_id: str):
+        session = self.get_meeting(meeting_code)
+        if not session:
+            return
+
+        session.meeting_sockets.pop(participant_id, None)
+        removed_participant = session.participants.pop(participant_id, None)
+        name = removed_participant.display_name if removed_participant else participant_id
+
+        logger.info(f"Participant {participant_id} ({name}) left meeting {meeting_code}")
+
+        if len(session.participants) == 0:
+            # Clean up empty meeting session
+            self.meetings.pop(meeting_code, None)
+            logger.info(f"Meeting {meeting_code} empty. Session ended and cleaned up.")
+        else:
+            # If the leaving participant was host, pass host to next oldest participant
