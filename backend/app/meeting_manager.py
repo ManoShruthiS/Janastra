@@ -125,3 +125,46 @@ class MeetingManager:
             logger.info(f"Meeting {meeting_code} empty. Session ended and cleaned up.")
         else:
             # If the leaving participant was host, pass host to next oldest participant
+            if removed_participant and removed_participant.is_host and session.participants:
+                next_host_id = next(iter(session.participants))
+                session.participants[next_host_id].is_host = True
+
+            await self.broadcast_to_room(
+                meeting_code,
+                {
+                    "type": "participant_left",
+                    "participant_id": participant_id,
+                    "all_participants": [p.model_dump() for p in session.participants.values()]
+                }
+            )
+
+    async def broadcast_to_room(self, meeting_code: str, message: dict, exclude_id: Optional[str] = None):
+        session = self.get_meeting(meeting_code)
+        if not session:
+            return
+
+        dead_connections = []
+        for pid, ws in list(session.meeting_sockets.items()):
+            if exclude_id and pid == exclude_id:
+                continue
+            try:
+                await ws.send_json(message)
+            except Exception as e:
+                logger.warning(f"Failed sending to {pid} in {meeting_code}: {e}")
+                dead_connections.append(pid)
+
+        for pid in dead_connections:
+            session.meeting_sockets.pop(pid, None)
+
+    async def send_to_participant(self, meeting_code: str, target_participant_id: str, message: dict):
+        session = self.get_meeting(meeting_code)
+        if not session:
+            return
+        ws = session.meeting_sockets.get(target_participant_id)
+        if ws:
+            try:
+                await ws.send_json(message)
+            except Exception as e:
+                logger.warning(f"Error sending direct message to {target_participant_id}: {e}")
+
+meeting_manager = MeetingManager()
