@@ -57,3 +57,63 @@ def health_check():
         "supported_languages_count": len(SUPPORTED_LANGUAGES)
     }
 
+@app.get("/api/languages")
+def get_languages():
+    return SUPPORTED_LANGUAGES
+
+@app.post("/api/meetings/create", response_model=CreateMeetingResponse)
+def create_meeting(request: CreateMeetingRequest):
+    code, host_id = meeting_manager.create_meeting(request.host_display_name)
+    return CreateMeetingResponse(meeting_code=code, host_id=host_id)
+
+@app.get("/api/meetings/{meeting_code}", response_model=MeetingInfoResponse)
+def get_meeting_info(meeting_code: str):
+    session = meeting_manager.get_meeting(meeting_code)
+    if not session:
+        # If code matches pattern, allow it so participants can connect directly
+        clean_code = meeting_code.upper().strip()
+        return MeetingInfoResponse(
+            meeting_code=clean_code,
+            active_participants_count=0,
+            created_at=time.time()
+        )
+    return MeetingInfoResponse(
+        meeting_code=session.code,
+        active_participants_count=len(session.participants),
+        created_at=session.created_at
+    )
+
+# -------------------------------------------------------------
+# WebSocket: Meeting Room Control, Signaling & Captions
+# -------------------------------------------------------------
+@app.websocket("/ws/meeting/{meeting_code}/{participant_id}")
+async def meeting_websocket_endpoint(
+    websocket: WebSocket,
+    meeting_code: str,
+    participant_id: str,
+    display_name: str = Query("Participant")
+):
+    await websocket.accept()
+    meeting_code_clean = meeting_code.upper().strip()
+    session = await meeting_manager.register_meeting_socket(
+        meeting_code_clean,
+        participant_id,
+        display_name,
+        websocket
+    )
+
+    try:
+        # Send initial sync payload to joining participant
+        participant_list = [p.model_dump() for p in session.participants.values()]
+        transcript_history = [c.model_dump() for c in session.transcript_history]
+        chat_history = [m.model_dump() for m in session.chat_messages]
+
+        await websocket.send_json({
+            "type": "init_sync",
+            "participant_id": participant_id,
+            "meeting_code": meeting_code_clean,
+            "participants": participant_list,
+            "transcript_history": transcript_history,
+            "chat_history": chat_history,
+            "is_host": session.participants[participant_id].is_host
+        })
