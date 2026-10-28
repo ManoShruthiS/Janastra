@@ -1,5 +1,28 @@
-__pycache__/
-*.py[cod]
-*$py.class
-venv/
+# Environment variables & secrets
 .env
+.env.local
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+*.egg-info/
+dist/
+build/
+
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+*.tsbuildinfo
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
