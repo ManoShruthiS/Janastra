@@ -30,3 +30,14 @@ export interface ChatMessage {
 }
 
 export interface SupportedLanguage {
+  code: string;
+  name: string;
+  native: string;
+  gnani_code: string;
+}
+
+export interface PeerStream {
+  participantId: string;
+  stream: MediaStream;
+  isScreenShare?: boolean;
+}
