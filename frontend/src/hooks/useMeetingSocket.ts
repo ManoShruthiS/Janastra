@@ -79,3 +79,43 @@ export function useMeetingSocket({
             }
             break;
 
+          case 'chat':
+            if (data.message) {
+              setChatMessages(prev => [...prev, data.message]);
+            }
+            break;
+
+          case 'speaker_active':
+            setActiveSpeakerId(data.is_speaking ? data.speaker_id : null);
+            break;
+
+          case 'signal':
+            if (data.sender_id && data.signal_data) {
+              onSignalRef.current(data.sender_id, data.signal_data);
+            }
+            break;
+
+          default:
+            break;
+        }
+      } catch (err) {
+        console.error('Failed to parse WebSocket message:', err);
+      }
+    };
+
+    return () => {
+      ws.close();
+      wsRef.current = null;
+    };
+  }, [meetingCode, participantId, displayName]);
+
+  const sendSignal = useCallback((targetId: string, signalData: any) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: 'signal',
+        target_id: targetId,
+        signal_data: signalData
+      }));
+    }
+  }, []);
+
