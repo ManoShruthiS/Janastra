@@ -19,3 +19,14 @@ export interface CaptionItem {
   translations: Record<string, string>;
   timestamp: number;
   is_final: boolean;
+}
+
+export interface ChatMessage {
+  id: string;
+  sender_id: string;
+  sender_name: string;
+  content: string;
+  timestamp: number;
+}
+
+export interface SupportedLanguage {
