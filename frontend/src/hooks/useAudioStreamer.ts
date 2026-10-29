@@ -56,3 +56,32 @@ export function useAudioStreamer({
     }
   }, [isMuted]);
 
+  // Capture audio from local MediaStream and convert to 16kHz 16-bit PCM
+  useEffect(() => {
+    if (!mediaStream) return;
+
+    const audioTracks = mediaStream.getAudioTracks();
+    if (audioTracks.length === 0) return;
+
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const audioCtx = new AudioCtx({ sampleRate: 16000 });
+      audioContextRef.current = audioCtx;
+
+      const sourceNode = audioCtx.createMediaStreamSource(mediaStream);
+      sourceNodeRef.current = sourceNode;
+
+      // ScriptProcessor with 4096 buffer size (~256ms of audio at 16kHz)
+      const processor = audioCtx.createScriptProcessor(4096, 1, 1);
+      processorNodeRef.current = processor;
+
+      processor.onaudioprocess = (e) => {
+        if (isMuted) return;
+        if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
+
+        const inputData = e.inputBuffer.getChannelData(0);
+        // Convert Float32Array [-1.0, 1.0] to Int16Array [-32768, 32767]
+        const pcm16 = new Int16Array(inputData.length);
+        for (let i = 0; i < inputData.length; i++) {
+          const s = Math.max(-1, Math.min(1, inputData[i]));
+          pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
