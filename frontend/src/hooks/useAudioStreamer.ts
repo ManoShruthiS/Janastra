@@ -85,3 +85,32 @@ export function useAudioStreamer({
         for (let i = 0; i < inputData.length; i++) {
           const s = Math.max(-1, Math.min(1, inputData[i]));
           pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        }
+
+        // Send raw PCM binary frame
+        wsRef.current.send(pcm16.buffer);
+      };
+
+      sourceNode.connect(processor);
+      // Connect to destination to keep processor alive
+      processor.connect(audioCtx.destination);
+    } catch (err) {
+      console.error('Error starting audio stream capture:', err);
+    }
+
+    return () => {
+      if (processorNodeRef.current) {
+        processorNodeRef.current.disconnect();
+        processorNodeRef.current = null;
+      }
+      if (sourceNodeRef.current) {
+        sourceNodeRef.current.disconnect();
+        sourceNodeRef.current = null;
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(console.error);
+        audioContextRef.current = null;
+      }
+    };
+  }, [mediaStream, isMuted]);
+}
