@@ -84,3 +84,46 @@ const VideoTile: React.FC<VideoTileProps> = ({
         </span>
       </div>
 
+      {/* Active speaker tag */}
+      {isSpeaking && (
+        <div className="absolute top-3 right-3 flex items-center space-x-1.5 bg-emerald-500/90 text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md uppercase tracking-wider">
+          <span className="w-1.5 h-1.5 rounded-full bg-slate-950 animate-ping" />
+          <span>Speaking</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+interface VideoGridProps {
+  localStream: MediaStream | null;
+  remoteStreams: Map<string, MediaStream>;
+  myDisplayName: string;
+  isHost: boolean;
+  isMuted: boolean;
+  isVideoOff: boolean;
+  isScreenSharing: boolean;
+  activeSpeakerId: string | null;
+  myParticipantId: string;
+  participants: Participant[];
+}
+
+export const VideoGrid: React.FC<VideoGridProps> = ({
+  localStream,
+  remoteStreams,
+  myDisplayName,
+  isHost,
+  isMuted,
+  isVideoOff,
+  isScreenSharing,
+  activeSpeakerId,
+  myParticipantId,
+  participants
+}) => {
+  // Remote peers
+  const otherParticipants = participants.filter((p) => p.id !== myParticipantId);
+  const totalCount = otherParticipants.length + 1;
+
+  // Compute grid layout class
+  const getGridClass = () => {
+    if (totalCount === 1) return 'grid-cols-1 max-w-4xl max-h-[80vh]';
