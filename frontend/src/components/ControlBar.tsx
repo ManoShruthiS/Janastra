@@ -103,3 +103,56 @@ export const ControlBar: React.FC<ControlBarProps> = ({
               : 'bg-slate-800 hover:bg-slate-700 text-slate-100 ring-1 ring-slate-700'
           }`}
         >
+          {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5 text-emerald-400" />}
+        </button>
+
+        {/* 2. Camera */}
+        <button
+          onClick={onToggleCam}
+          title={isVideoOff ? 'Turn Camera On' : 'Turn Camera Off'}
+          className={`relative p-3 rounded-full transition-all duration-150 shadow-md ${
+            isVideoOff
+              ? 'bg-rose-600/90 hover:bg-rose-500 text-white ring-2 ring-rose-500/30'
+              : 'bg-slate-800 hover:bg-slate-700 text-slate-100 ring-1 ring-slate-700'
+          }`}
+        >
+          {isVideoOff ? <VideoOff className="w-5 h-5" /> : <Video className="w-5 h-5 text-blue-400" />}
+        </button>
+
+        {/* 3. Screen Sharing */}
+        <button
+          onClick={onToggleScreenShare}
+          title={isScreenSharing ? 'Stop Screen Sharing' : 'Share Screen'}
+          className={`relative p-3 rounded-full transition-all duration-150 shadow-md ${
+            isScreenSharing
+              ? 'bg-blue-600 hover:bg-blue-500 text-white ring-2 ring-blue-400/50'
+              : 'bg-slate-800 hover:bg-slate-700 text-slate-200 ring-1 ring-slate-700'
+          }`}
+        >
+          <ScreenShare className="w-5 h-5" />
+        </button>
+
+        {/* 4. Chat */}
+        <button
+          onClick={onToggleChat}
+          title="Meeting Chat"
+          className={`relative p-3 rounded-full transition-all duration-150 shadow-md ${
+            isChatOpen
+              ? 'bg-blue-600 text-white ring-2 ring-blue-400/50'
+              : 'bg-slate-800 hover:bg-slate-700 text-slate-200 ring-1 ring-slate-700'
+          }`}
+        >
+          <MessageSquare className="w-5 h-5" />
+          {unreadChatCount > 0 && !isChatOpen && (
+            <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+              {unreadChatCount > 9 ? '9+' : unreadChatCount}
+            </span>
+          )}
+        </button>
+
+        {/* 5. Participants */}
+        <button
+          onClick={onToggleParticipants}
+          title="Participants List"
+          className={`relative p-3 rounded-full transition-all duration-150 shadow-md ${
+            isParticipantsOpen
