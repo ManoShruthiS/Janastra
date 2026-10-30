@@ -139,3 +139,144 @@ export function useWebRTC({
         sendSignal(senderId, { type: 'answer', sdp: answer });
       } else if (signalData.type === 'answer') {
         await pc.setRemoteDescription(new RTCSessionDescription(signalData.sdp));
+      } else if (signalData.candidate) {
+        try {
+          await pc.addIceCandidate(new RTCIceCandidate(signalData.candidate));
+        } catch (e) {
+          console.warn('Error adding ICE candidate:', e);
+        }
+      }
+    } catch (err) {
+      console.error(`Error handling WebRTC signal from ${senderId}:`, err);
+    }
+  }, [getOrCreatePeerConnection, sendSignal]);
+
+  // Synchronize peer connections with participant list
+  useEffect(() => {
+    participants.forEach(p => {
+      if (p.id === myParticipantId) return;
+
+      // Deterministic initiator rule:
+      // The peer whose ID is lexicographically greater initiates the offer to prevent glare
+      if (myParticipantId > p.id && !peerConnectionsRef.current.has(p.id)) {
+        const pc = getOrCreatePeerConnection(p.id);
+        pc.createOffer()
+          .then(offer => pc.setLocalDescription(offer).then(() => offer))
+          .then(offer => {
+            sendSignal(p.id, { type: 'offer', sdp: offer });
+          })
+          .catch(err => console.error(`Error creating offer to ${p.id}:`, err));
+      }
+    });
+
+    // Cleanup disconnected participants
+    const activeIds = new Set(participants.map(p => p.id));
+    peerConnectionsRef.current.forEach((pc, id) => {
+      if (!activeIds.has(id)) {
+        pc.close();
+        peerConnectionsRef.current.delete(id);
+        setRemoteStreams(prev => {
+          const next = new Map(prev);
+          next.delete(id);
+          return next;
+        });
+      }
+    });
+  }, [participants, myParticipantId, getOrCreatePeerConnection, sendSignal]);
+
+  // Toggle Microphone
+  const toggleMic = useCallback(() => {
+    if (!localStreamRef.current) return;
+    const audioTrack = localStreamRef.current.getAudioTracks()[0];
+    if (audioTrack) {
+      const nextState = !isMuted;
+      audioTrack.enabled = !nextState;
+      setIsMuted(nextState);
+      sendMediaState({ is_muted: nextState });
+    }
+  }, [isMuted, sendMediaState]);
+
+  // Toggle Camera
+  const toggleCam = useCallback(() => {
+    if (!localStreamRef.current) return;
+    const videoTrack = localStreamRef.current.getVideoTracks()[0];
+    if (videoTrack) {
+      const nextState = !isVideoOff;
+      videoTrack.enabled = !nextState;
+      setIsVideoOff(nextState);
+      sendMediaState({ is_video_off: nextState });
+    }
+  }, [isVideoOff, sendMediaState]);
+
+  // Toggle Screen Sharing
+  const toggleScreenShare = useCallback(async () => {
+    if (isScreenSharing) {
+      // Stop screen share and revert to webcam
+      if (screenTrackRef.current) {
+        screenTrackRef.current.stop();
+        screenTrackRef.current = null;
+      }
+      if (webcamVideoTrackRef.current && localStreamRef.current) {
+        // Replace track on all peer connections
+        peerConnectionsRef.current.forEach(pc => {
+          const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+          if (sender && webcamVideoTrackRef.current) {
+            sender.replaceTrack(webcamVideoTrackRef.current);
+          }
+        });
+        // Replace in local stream
+        const currentVideo = localStreamRef.current.getVideoTracks()[0];
+        if (currentVideo) localStreamRef.current.removeTrack(currentVideo);
+        localStreamRef.current.addTrack(webcamVideoTrackRef.current);
+      }
+      setIsScreenSharing(false);
+      sendMediaState({ is_screen_sharing: false });
+    } else {
+      // Start screen share
+      try {
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: false
+        });
+        const screenVideoTrack = screenStream.getVideoTracks()[0];
+        screenTrackRef.current = screenVideoTrack;
+
+        screenVideoTrack.onended = () => {
+          // User clicked "Stop Sharing" on browser banner
+          toggleScreenShare();
+        };
+
+        // Replace track on all peer connections
+        peerConnectionsRef.current.forEach(pc => {
+          const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+          if (sender) {
+            sender.replaceTrack(screenVideoTrack);
+          }
+        });
+
+        if (localStreamRef.current) {
+          const currentVideo = localStreamRef.current.getVideoTracks()[0];
+          if (currentVideo) localStreamRef.current.removeTrack(currentVideo);
+          localStreamRef.current.addTrack(screenVideoTrack);
+        }
+
+        setIsScreenSharing(true);
+        sendMediaState({ is_screen_sharing: true });
+      } catch (err) {
+        console.warn('Screen sharing was cancelled or failed:', err);
+      }
+    }
+  }, [isScreenSharing, sendMediaState]);
+
+  return {
+    localStream,
+    remoteStreams,
+    isMuted,
+    isVideoOff,
+    isScreenSharing,
+    toggleMic,
+    toggleCam,
+    toggleScreenShare,
+    handleSignal
+  };
+}
