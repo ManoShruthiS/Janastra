@@ -76,3 +76,81 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
             <X className="w-4 h-4" />
           </button>
         </div>
+      </div>
+
+      {/* Language Selector Bar */}
+      <div className="px-4 py-2.5 bg-slate-950/60 border-b border-slate-800/80 flex items-center justify-between">
+        <div className="flex items-center space-x-1.5 text-xs text-slate-400">
+          <Globe className="w-3.5 h-3.5 text-blue-400" />
+          <span>My Language:</span>
+        </div>
+        <select
+          value={selectedLanguage}
+          onChange={(e) => onChangeLanguage(e.target.value)}
+          className="bg-slate-800 text-xs text-blue-300 font-semibold px-2 py-1 rounded border border-slate-700 outline-none cursor-pointer hover:border-blue-500"
+        >
+          {supportedLanguages.map((lang) => (
+            <option key={lang.code} value={lang.code} className="bg-slate-900 text-slate-100">
+              {lang.name} ({lang.native})
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Search Input */}
+      <div className="p-3 border-b border-slate-800/60">
+        <div className="relative">
+          <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-500" />
+          <input
+            type="text"
+            placeholder="Search transcript..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-slate-950 text-xs text-slate-200 pl-9 pr-3 py-2 rounded-lg border border-slate-800 focus:outline-none focus:border-blue-500 transition"
+          />
+        </div>
+      </div>
+
+      {/* Transcript Scroll Area */}
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 p-4 overflow-y-auto space-y-3.5 scroll-smooth"
+      >
+        {filteredCaptions.length === 0 ? (
+          <div className="text-center py-16 text-slate-500 text-xs">
+            {searchQuery ? 'No matching transcript lines found.' : 'Captions will appear here continuously as participants speak.'}
+          </div>
+        ) : (
+          filteredCaptions.map((item) => {
+            const timeStr = new Date(item.timestamp * 1000).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit'
+            });
+            const displayText = item.translations[selectedLanguage] || item.original_text;
+
+            return (
+              <div key={item.id} className="group flex flex-col space-y-1">
+                <div className="flex items-center justify-between text-[11px] text-slate-400">
+                  <span className="font-semibold text-blue-400 group-hover:text-blue-300 transition">
+                    {item.speaker_name}
+                  </span>
+                  <span className="text-slate-500 font-mono text-[10px]">{timeStr}</span>
+                </div>
+                <div className="text-xs sm:text-sm text-slate-100 font-normal leading-relaxed bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/60">
+                  {displayText}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Footer Info */}
+      <div className="p-3 bg-slate-950/80 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+        <span>{captions.length} total captions</span>
+        <span className="text-slate-500">Auto-translated</span>
+      </div>
+    </div>
+  );
+};
