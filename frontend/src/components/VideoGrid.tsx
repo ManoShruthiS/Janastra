@@ -127,3 +127,46 @@ export const VideoGrid: React.FC<VideoGridProps> = ({
   // Compute grid layout class
   const getGridClass = () => {
     if (totalCount === 1) return 'grid-cols-1 max-w-4xl max-h-[80vh]';
+    if (totalCount === 2) return 'grid-cols-1 md:grid-cols-2 max-w-6xl';
+    if (totalCount <= 4) return 'grid-cols-1 sm:grid-cols-2 max-w-6xl';
+    if (totalCount <= 6) return 'grid-cols-2 sm:grid-cols-3 max-w-7xl';
+    return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 max-w-7xl';
+  };
+
+  return (
+    <div className="flex-1 w-full h-full p-4 flex items-center justify-center overflow-hidden">
+      <div className={`grid gap-4 w-full h-full items-center justify-center ${getGridClass()}`}>
+        {/* Local Participant Tile */}
+        <VideoTile
+          stream={localStream}
+          displayName={myDisplayName}
+          isMe={true}
+          isMuted={isMuted}
+          isVideoOff={isVideoOff}
+          isHost={isHost}
+          isSpeaking={activeSpeakerId === myParticipantId}
+          isScreenSharing={isScreenSharing}
+        />
+
+        {/* Remote Participants Tiles */}
+        {otherParticipants.map((p) => {
+          const stream = remoteStreams.get(p.id) || null;
+
+          return (
+            <VideoTile
+              key={p.id}
+              stream={stream}
+              displayName={p.display_name}
+              isMe={false}
+              isMuted={p.is_muted}
+              isVideoOff={p.is_video_off}
+              isHost={p.is_host}
+              isSpeaking={activeSpeakerId === p.id}
+              isScreenSharing={p.is_screen_sharing}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+};
