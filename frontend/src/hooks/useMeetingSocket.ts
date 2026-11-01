@@ -119,3 +119,44 @@ export function useMeetingSocket({
     }
   }, []);
 
+  const sendCaptionPref = useCallback((language: string, enabled: boolean) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: 'caption_pref',
+        caption_language: language,
+        caption_enabled: enabled
+      }));
+    }
+  }, []);
+
+  const sendChatMessage = useCallback((content: string) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: 'chat',
+        content
+      }));
+    }
+  }, []);
+
+  const sendMediaState = useCallback((state: { is_muted?: boolean; is_video_off?: boolean; is_screen_sharing?: boolean }) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: 'media_state',
+        ...state
+      }));
+    }
+  }, []);
+
+  return {
+    isConnected,
+    isHost,
+    participants,
+    captions,
+    chatMessages,
+    activeSpeakerId,
+    sendSignal,
+    sendCaptionPref,
+    sendChatMessage,
+    sendMediaState
+  };
+}
