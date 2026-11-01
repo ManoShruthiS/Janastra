@@ -27,3 +27,32 @@ export function App() {
     setInMeeting(true);
 
     // Update URL without reloading
+    const newUrl = `${window.location.pathname}?code=${encodeURIComponent(code)}`;
+    window.history.pushState({ path: newUrl }, '', newUrl);
+  };
+
+  const handleLeave = () => {
+    setInMeeting(false);
+    setMeetingCode('');
+    setDisplayName('');
+    setParticipantId('');
+    setIsHost(false);
+
+    // Clean URL
+    window.history.pushState({}, '', window.location.pathname);
+  };
+
+  return inMeeting ? (
+    <MeetingRoom
+      meetingCode={meetingCode}
+      participantId={participantId}
+      displayName={displayName}
+      initialIsHost={isHost}
+      onLeave={handleLeave}
+    />
+  ) : (
+    <Lobby onJoinMeeting={handleJoin} />
+  );
+}
+
+export default App;
