@@ -140,3 +140,146 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
   };
+
+  // Find active speaker display name
+  const activeSpeaker = participants.find((p) => p.id === activeSpeakerId);
+
+  return (
+    <div className="flex flex-col h-screen w-screen bg-slate-950 text-slate-100 overflow-hidden select-none">
+      {/* Top Header Bar */}
+      <header className="h-14 px-5 border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md flex items-center justify-between z-20 shrink-0">
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm shadow-blue-500/50" />
+            <h1 className="text-base font-extrabold tracking-tight text-white">
+              JANASTRA
+            </h1>
+          </div>
+
+          <div className="h-4 w-px bg-slate-700 mx-2" />
+
+          {/* Meeting Code Badge */}
+          <button
+            onClick={handleCopyMeetingCode}
+            title="Click to copy meeting code"
+            className="flex items-center space-x-2 bg-slate-800/90 hover:bg-slate-700/80 px-2.5 py-1 rounded-lg border border-slate-700 text-xs font-mono text-slate-200 transition"
+          >
+            <span>{meetingCode}</span>
+            {copiedCode ? (
+              <Check className="w-3.5 h-3.5 text-emerald-400" />
+            ) : (
+              <Copy className="w-3.5 h-3.5 text-slate-400" />
+            )}
+          </button>
+        </div>
+
+        {/* Right Info: Current caption language & status */}
+        <div className="flex items-center space-x-3 text-xs">
+          {captionsEnabled && (
+            <div className="flex items-center space-x-1.5 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-md text-blue-300">
+              <Subtitles className="w-3.5 h-3.5 text-blue-400" />
+              <span>CC: {selectedLanguage.toUpperCase()}</span>
+            </div>
+          )}
+
+          <div className="flex items-center space-x-1.5 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700 text-slate-300">
+            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+            <span>{isConnected ? 'Connected' : 'Connecting...'}</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex relative overflow-hidden">
+        {/* Video Area */}
+        <div className="flex-1 flex flex-col relative h-full">
+          <VideoGrid
+            localStream={localStream}
+            remoteStreams={remoteStreams}
+            myDisplayName={displayName}
+            isHost={isHost || initialIsHost}
+            isMuted={isMuted}
+            isVideoOff={isVideoOff}
+            isScreenSharing={isScreenSharing}
+            activeSpeakerId={activeSpeakerId}
+            myParticipantId={participantId}
+            participants={participants}
+          />
+
+          {/* Continuous Bottom Caption Overlay */}
+          {captionsEnabled && !isTranscriptOpen && (
+            <CaptionOverlay
+              captions={captions}
+              selectedLanguage={selectedLanguage}
+              onExpandTranscript={() => setIsTranscriptOpen(true)}
+              activeSpeakerName={activeSpeaker?.display_name}
+            />
+          )}
+        </div>
+
+        {/* Expandable / Collapsible Side Panels */}
+        {isTranscriptOpen && (
+          <TranscriptPanel
+            captions={captions}
+            selectedLanguage={selectedLanguage}
+            supportedLanguages={supportedLanguages}
+            onClose={() => setIsTranscriptOpen(false)}
+            onChangeLanguage={handleChangeLanguage}
+          />
+        )}
+
+        {isChatOpen && (
+          <ChatPanel
+            messages={chatMessages}
+            currentUserId={participantId}
+            onSendMessage={sendChatMessage}
+            onClose={() => setIsChatOpen(false)}
+          />
+        )}
+
+        {isParticipantsOpen && (
+          <ParticipantsPanel
+            participants={participants}
+            currentUserId={participantId}
+            supportedLanguages={supportedLanguages}
+            onClose={() => setIsParticipantsOpen(false)}
+          />
+        )}
+      </div>
+
+      {/* Control Bar: exactly the 8 specified meeting controls */}
+      <ControlBar
+        isMuted={isMuted}
+        isVideoOff={isVideoOff}
+        isScreenSharing={isScreenSharing}
+        isChatOpen={isChatOpen}
+        isParticipantsOpen={isParticipantsOpen}
+        captionsEnabled={captionsEnabled}
+        selectedLanguage={selectedLanguage}
+        supportedLanguages={supportedLanguages}
+        participantCount={participants.length}
+        unreadChatCount={unreadChatCount}
+        onToggleMic={toggleMic}
+        onToggleCam={toggleCam}
+        onToggleScreenShare={toggleScreenShare}
+        onToggleChat={handleOpenChat}
+        onToggleParticipants={handleOpenParticipants}
+        onToggleCaptions={handleToggleCaptions}
+        onChangeLanguage={handleChangeLanguage}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+        onLeaveMeeting={onLeave}
+      />
+
+      {/* Settings Modal */}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        captionsEnabled={captionsEnabled}
+        selectedLanguage={selectedLanguage}
+        supportedLanguages={supportedLanguages}
+        onToggleCaptions={handleToggleCaptions}
+        onChangeLanguage={handleChangeLanguage}
+      />
+    </div>
+  );
+};
