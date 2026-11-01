@@ -69,3 +69,74 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
     meetingCode,
     participantId,
     displayName,
+    onSignalReceived: (senderId, signalData) => {
+      signalHandlerRef.current(senderId, signalData);
+    }
+  });
+
+  // 2. WebRTC Peer Connections & Local Media
+  const {
+    localStream,
+    remoteStreams,
+    isMuted,
+    isVideoOff,
+    isScreenSharing,
+    toggleMic,
+    toggleCam,
+    toggleScreenShare,
+    handleSignal
+  } = useWebRTC({
+    myParticipantId: participantId,
+    participants,
+    sendSignal,
+    sendMediaState
+  });
+
+  signalHandlerRef.current = handleSignal;
+
+  // 3. Audio Streamer (pipes 16kHz PCM directly to backend for Gnani Prisma v3.0 recognition)
+  useAudioStreamer({
+    mediaStream: localStream,
+    isMuted,
+    meetingCode,
+    participantId,
+    displayName
+  });
+
+  // Inform backend when participant toggles caption or changes language
+  const handleToggleCaptions = useCallback(() => {
+    const nextState = !captionsEnabled;
+    setCaptionsEnabled(nextState);
+    sendCaptionPref(selectedLanguage, nextState);
+  }, [captionsEnabled, selectedLanguage, sendCaptionPref]);
+
+  const handleChangeLanguage = useCallback((newLang: string) => {
+    setSelectedLanguage(newLang);
+    sendCaptionPref(newLang, captionsEnabled);
+  }, [captionsEnabled, sendCaptionPref]);
+
+  // Handle chat unread badge
+  useEffect(() => {
+    if (!isChatOpen && chatMessages.length > 0) {
+      setUnreadChatCount((prev) => prev + 1);
+    }
+  }, [chatMessages.length, isChatOpen]);
+
+  const handleOpenChat = () => {
+    setIsChatOpen((prev) => {
+      if (!prev) setUnreadChatCount(0);
+      return !prev;
+    });
+    setIsParticipantsOpen(false);
+  };
+
+  const handleOpenParticipants = () => {
+    setIsParticipantsOpen((prev) => !prev);
+    setIsChatOpen(false);
+  };
+
+  const handleCopyMeetingCode = () => {
+    navigator.clipboard.writeText(meetingCode);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
