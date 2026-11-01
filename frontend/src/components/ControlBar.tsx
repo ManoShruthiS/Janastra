@@ -156,3 +156,56 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           title="Participants List"
           className={`relative p-3 rounded-full transition-all duration-150 shadow-md ${
             isParticipantsOpen
+              ? 'bg-blue-600 text-white ring-2 ring-blue-400/50'
+              : 'bg-slate-800 hover:bg-slate-700 text-slate-200 ring-1 ring-slate-700'
+          }`}
+        >
+          <Users className="w-5 h-5" />
+          <span className="absolute -top-1 -right-1 bg-slate-700 text-slate-300 text-[10px] font-semibold rounded-full px-1.5 py-0.5 border border-slate-600">
+            {participantCount}
+          </span>
+        </button>
+
+        {/* 6. Captions Toggle */}
+        <button
+          onClick={onToggleCaptions}
+          title="Captions"
+          className={`relative p-3 rounded-full transition-all duration-150 shadow-md ${
+            captionsEnabled
+              ? 'bg-emerald-600 hover:bg-emerald-500 text-white ring-2 ring-emerald-400/50'
+              : 'bg-slate-800 hover:bg-slate-700 text-slate-200 ring-1 ring-slate-700'
+          }`}
+        >
+          <Subtitles className="w-5 h-5" />
+        </button>
+
+        {/* 7. Settings */}
+        <button
+          onClick={onOpenSettings}
+          title="Settings"
+          className="p-3 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 ring-1 ring-slate-700 transition-all duration-150 shadow-md"
+        >
+          <Settings className="w-5 h-5" />
+        </button>
+
+        {/* 8. Leave Meeting */}
+        <button
+          onClick={onLeaveMeeting}
+          title="Leave Meeting"
+          className="px-4 py-3 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-semibold transition-all duration-150 shadow-lg flex items-center space-x-2 ring-2 ring-rose-500/40"
+        >
+          <PhoneOff className="w-5 h-5" />
+          <span className="hidden md:inline text-xs font-bold uppercase tracking-wide">Leave</span>
+        </button>
+      </div>
+
+      {/* Right side: Branding & Live indicator */}
+      <div className="hidden sm:flex items-center space-x-3 text-xs text-slate-400">
+        <span className="flex items-center space-x-1.5 bg-slate-800/80 px-2.5 py-1.5 rounded-md border border-slate-700/60 font-mono">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+          <span className="text-slate-200 font-semibold">Gnani Prisma v3.0</span>
+        </span>
+      </div>
+    </div>
+  );
+};
