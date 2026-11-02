@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Maximize2, Subtitles } from 'lucide-react';
+import { Maximize2 } from 'lucide-react';
 import { CaptionItem } from '../types/meeting';
 
 interface CaptionOverlayProps {
@@ -32,14 +32,14 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
 
   return (
     <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-11/12 max-w-3xl z-20 pointer-events-auto">
-      <div className="relative group bg-slate-950/85 backdrop-blur-md rounded-2xl border border-slate-700/70 p-4 shadow-2xl transition-all duration-200 hover:border-blue-500/50">
+      <div className="relative group bg-black/95 backdrop-blur-xl rounded-2xl border border-neutral-800 p-4 shadow-2xl transition-all duration-200 hover:border-gold-champagne/40">
         {/* Expand to full transcript panel button */}
         <button
           onClick={onExpandTranscript}
           title="Expand Full Meeting Transcript"
-          className="absolute -top-3 right-4 flex items-center space-x-1 px-2.5 py-1 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-semibold shadow-lg transition-transform hover:scale-105 active:scale-95"
+          className="absolute -top-3 right-4 flex items-center space-x-1.5 px-3 py-1 rounded-full bg-obsidian-900 hover:bg-obsidian-800 text-gold-300 text-[11px] font-semibold border border-gold-champagne/40 shadow-gold-glow transition-transform hover:scale-105 active:scale-95 uppercase tracking-wider"
         >
-          <Maximize2 className="w-3 h-3" />
+          <Maximize2 className="w-3 h-3 text-gold-400" />
           <span>Full Transcript</span>
         </button>
 
@@ -48,18 +48,17 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
           className="max-h-36 overflow-y-auto space-y-2.5 pr-2 scroll-smooth"
         >
           {recentCaptions.map((item) => {
-            // Retrieve translated text according to the participant's individually selected language
             const displayText = item.translations[selectedLanguage] || item.original_text;
 
             return (
               <div
                 key={item.id}
-                className="flex items-start space-x-2.5 text-sm sm:text-base leading-relaxed animate-fade-in"
+                className="flex items-start space-x-2.5 text-sm sm:text-base leading-relaxed"
               >
-                <span className="font-bold text-blue-400 shrink-0 select-none bg-blue-950/60 px-2 py-0.5 rounded border border-blue-800/40">
+                <span className="font-bold text-gold-300 shrink-0 select-none bg-obsidian-850 px-2 py-0.5 rounded border border-gold-champagne/30 text-xs sm:text-sm tracking-wide">
                   {item.speaker_name}:
                 </span>
-                <span className="text-slate-100 font-medium break-words">
+                <span className="text-silver-200 font-medium break-words">
                   {displayText}
                 </span>
               </div>
@@ -67,9 +66,9 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
           })}
 
           {activeSpeakerName && recentCaptions.length === 0 && (
-            <div className="flex items-center space-x-2 text-slate-400 text-sm italic">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span>{activeSpeakerName} is speaking...</span>
+            <div className="flex items-center space-x-2 text-silver-matte text-sm italic">
+              <span className="w-2 h-2 rounded-full bg-gold-400 animate-ping" />
+              <span className="text-gold-300">{activeSpeakerName} is speaking...</span>
             </div>
           )}
         </div>

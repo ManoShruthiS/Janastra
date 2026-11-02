@@ -33,10 +33,10 @@ const VideoTile: React.FC<VideoTileProps> = ({
 
   return (
     <div
-      className={`relative w-full h-full min-h-[220px] rounded-2xl overflow-hidden bg-slate-900 border transition-all duration-200 flex items-center justify-center shadow-lg ${
+      className={`relative w-full h-full min-h-[220px] rounded-3xl overflow-hidden bg-black transition-all duration-300 flex items-center justify-center shadow-2xl ${
         isSpeaking
-          ? 'border-emerald-500 shadow-emerald-500/20 ring-2 ring-emerald-400/50'
-          : 'border-slate-800'
+          ? 'border border-gold-champagne shadow-gold-glow ring-1 ring-gold-champagne/50'
+          : 'border border-neutral-900 hover:border-neutral-800'
       }`}
     >
       {/* Video Element */}
@@ -52,24 +52,24 @@ const VideoTile: React.FC<VideoTileProps> = ({
         />
       ) : (
         <div className="flex flex-col items-center justify-center space-y-3">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-blue-600/30 border-2 border-blue-500/50 flex items-center justify-center text-xl sm:text-2xl font-bold text-blue-300 uppercase shadow-inner">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-obsidian-900 border border-gold-champagne/40 flex items-center justify-center text-xl sm:text-2xl font-bold text-gold-300 uppercase shadow-gold-glow">
             {displayName.charAt(0) || 'U'}
           </div>
-          <span className="text-slate-400 text-xs flex items-center space-x-1">
-            <VideoOff className="w-3.5 h-3.5" />
+          <span className="text-silver-matte text-xs flex items-center space-x-1.5 font-mono">
+            <VideoOff className="w-3.5 h-3.5 text-silver-matte" />
             <span>Camera Off</span>
           </span>
         </div>
       )}
 
       {/* Participant Badge & Status */}
-      <div className="absolute bottom-3 left-3 flex items-center space-x-2 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700/60 shadow-md">
-        <span className="text-xs font-semibold text-slate-100 flex items-center space-x-1.5">
-          <span>{displayName}</span>
-          {isMe && <span className="text-[10px] text-blue-400 font-normal">(You)</span>}
+      <div className="absolute bottom-3 left-3 flex items-center space-x-2 bg-black/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-neutral-800/90 shadow-md">
+        <span className="text-xs font-semibold text-silver-200 flex items-center space-x-1.5">
+          <span className="text-gold-200 tracking-wide">{displayName}</span>
+          {isMe && <span className="text-[10px] text-silver-matte font-normal">(You)</span>}
           {isHost && (
             <span title="Meeting Host">
-              <Crown className="w-3.5 h-3.5 text-amber-400" />
+              <Crown className="w-3.5 h-3.5 text-gold-400" />
             </span>
           )}
         </span>
@@ -77,17 +77,17 @@ const VideoTile: React.FC<VideoTileProps> = ({
         {/* Microphone indicator */}
         <span className="pl-1">
           {isMuted ? (
-            <MicOff className="w-3.5 h-3.5 text-rose-400" />
+            <MicOff className="w-3.5 h-3.5 text-silver-matte" />
           ) : (
-            <Mic className="w-3.5 h-3.5 text-emerald-400" />
+            <Mic className="w-3.5 h-3.5 text-gold-400" />
           )}
         </span>
       </div>
 
       {/* Active speaker tag */}
       {isSpeaking && (
-        <div className="absolute top-3 right-3 flex items-center space-x-1.5 bg-emerald-500/90 text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md uppercase tracking-wider">
-          <span className="w-1.5 h-1.5 rounded-full bg-slate-950 animate-ping" />
+        <div className="absolute top-3 right-3 flex items-center space-x-1.5 bg-obsidian-900 border border-gold-champagne text-gold-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-gold-glow uppercase tracking-widest">
+          <span className="w-1.5 h-1.5 rounded-full bg-gold-400 animate-ping" />
           <span>Speaking</span>
         </div>
       )}
@@ -120,11 +120,9 @@ export const VideoGrid: React.FC<VideoGridProps> = ({
   myParticipantId,
   participants
 }) => {
-  // Remote peers
   const otherParticipants = participants.filter((p) => p.id !== myParticipantId);
   const totalCount = otherParticipants.length + 1;
 
-  // Compute grid layout class
   const getGridClass = () => {
     if (totalCount === 1) return 'grid-cols-1 max-w-4xl max-h-[80vh]';
     if (totalCount === 2) return 'grid-cols-1 md:grid-cols-2 max-w-6xl';
@@ -134,7 +132,7 @@ export const VideoGrid: React.FC<VideoGridProps> = ({
   };
 
   return (
-    <div className="flex-1 w-full h-full p-4 flex items-center justify-center overflow-hidden">
+    <div className="flex-1 w-full h-full p-4 flex items-center justify-center overflow-hidden bg-black">
       <div className={`grid gap-4 w-full h-full items-center justify-center ${getGridClass()}`}>
         {/* Local Participant Tile */}
         <VideoTile

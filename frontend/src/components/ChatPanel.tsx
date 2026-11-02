@@ -32,16 +32,16 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   };
 
   return (
-    <div className="w-80 sm:w-96 h-full bg-slate-900 border-l border-slate-800 flex flex-col z-30 shadow-2xl">
+    <div className="w-80 sm:w-96 h-full bg-black border-l border-neutral-800 flex flex-col z-30 shadow-2xl">
       {/* Header */}
-      <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+      <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <MessageSquare className="w-5 h-5 text-blue-400" />
-          <h2 className="font-semibold text-slate-100 text-sm sm:text-base">In-Call Messages</h2>
+          <MessageSquare className="w-5 h-5 text-gold-400" />
+          <h2 className="font-semibold text-gold-300 text-sm sm:text-base tracking-wide">In-Call Messages</h2>
         </div>
         <button
           onClick={onClose}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition"
+          className="p-1.5 rounded-lg text-silver-matte hover:text-gold-300 hover:bg-neutral-900 transition"
         >
           <X className="w-4 h-4" />
         </button>
@@ -50,7 +50,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto space-y-3">
         {messages.length === 0 ? (
-          <div className="text-center py-20 text-slate-500 text-xs">
+          <div className="text-center py-20 text-neutral-600 text-xs">
             Messages are temporary and visible only during this call.
           </div>
         ) : (
@@ -66,17 +66,17 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                 key={m.id}
                 className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
               >
-                <div className="flex items-center space-x-1.5 text-[11px] text-slate-400 mb-1">
-                  <span className="font-semibold text-slate-300">
+                <div className="flex items-center space-x-1.5 text-[11px] mb-1">
+                  <span className={`font-semibold ${isMe ? 'text-gold-300' : 'text-silver-300'}`}>
                     {isMe ? 'You' : m.sender_name}
                   </span>
-                  <span>{timeStr}</span>
+                  <span className="text-neutral-500 font-mono text-[10px]">{timeStr}</span>
                 </div>
                 <div
-                  className={`max-w-[85%] px-3 py-2 rounded-2xl text-xs sm:text-sm break-words leading-relaxed ${
+                  className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm break-words leading-relaxed shadow-md ${
                     isMe
-                      ? 'bg-blue-600 text-white rounded-tr-none'
-                      : 'bg-slate-800 text-slate-100 border border-slate-700 rounded-tl-none'
+                      ? 'bg-obsidian-850 text-silver-100 border border-gold-champagne/40 rounded-tr-none'
+                      : 'bg-obsidian-900 text-silver-200 border border-neutral-800 rounded-tl-none'
                   }`}
                 >
                   {m.content}
@@ -88,20 +88,20 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       </div>
 
       {/* Input Form */}
-      <form onSubmit={handleSubmit} className="p-3 border-t border-slate-800 bg-slate-950/60 flex items-center space-x-2">
+      <form onSubmit={handleSubmit} className="p-3 border-t border-neutral-800 bg-obsidian-900 flex items-center space-x-2">
         <input
           type="text"
           placeholder="Send a message to everyone..."
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          className="flex-1 bg-slate-900 text-xs sm:text-sm text-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-700 focus:outline-none focus:border-blue-500 transition"
+          className="flex-1 bg-black text-xs sm:text-sm text-silver-100 px-3.5 py-2.5 rounded-xl border border-neutral-800 focus:outline-none focus:border-gold-champagne/50 focus:ring-1 focus:ring-gold-champagne/30 transition placeholder:text-neutral-600"
         />
         <button
           type="submit"
           disabled={!inputText.trim()}
-          className="p-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white transition shadow-md"
+          className="p-2.5 rounded-xl bg-obsidian-850 hover:bg-neutral-900 disabled:opacity-40 disabled:cursor-not-allowed text-gold-300 border border-gold-champagne/40 transition shadow-md"
         >
-          <Send className="w-4 h-4" />
+          <Send className="w-4 h-4 text-gold-400" />
         </button>
       </form>
     </div>

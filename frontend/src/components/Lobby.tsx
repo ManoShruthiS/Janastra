@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Video, Plus, LogIn, Sparkles, Languages, ShieldCheck } from 'lucide-react';
+import { Video, Plus, LogIn, Languages, ShieldCheck } from 'lucide-react';
 import { getApiBaseUrl } from '../config';
 
 interface LobbyProps {
@@ -56,61 +56,61 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-black text-silver-matte flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Subtle Luxury Ambient Lighting */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gold-champagne/5 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-zinc-800/20 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Main Container */}
       <div className="w-full max-w-md relative z-10 flex flex-col items-center">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center space-x-2.5 bg-blue-600/15 border border-blue-500/30 px-4 py-1.5 rounded-full mb-3 shadow-inner">
-            <Languages className="w-4 h-4 text-blue-400" />
-            <span className="text-xs font-semibold text-blue-300">
+          <div className="inline-flex items-center space-x-2.5 bg-obsidian-900 border border-gold-champagne/30 px-4 py-1.5 rounded-full mb-4 shadow-gold-glow">
+            <Languages className="w-4 h-4 text-gold-400" />
+            <span className="text-xs font-semibold tracking-wider uppercase text-gold-300">
               Multilingual Real-Time Captions
             </span>
           </div>
 
-          <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2">
+          <h1 className="text-5xl font-black tracking-tight mb-2 text-gold-metallic">
             JANASTRA
           </h1>
-          <p className="text-sm text-slate-400 max-w-sm mx-auto">
+          <p className="text-xs sm:text-sm text-silver-400 max-w-sm mx-auto leading-relaxed">
             Live speaker-attributed speech recognition &amp; translation powered by{' '}
-            <span className="text-blue-400 font-semibold">Gnani Prisma v3.0</span>.
+            <span className="text-gold-300 font-semibold">Gnani Prisma v3.0</span>.
           </p>
         </div>
 
         {/* Card */}
-        <div className="w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl backdrop-blur-xl">
+        <div className="w-full bg-obsidian-900/90 border border-neutral-800 rounded-3xl p-6 shadow-2xl backdrop-blur-2xl">
           {/* Tabs */}
-          <div className="flex bg-slate-950/70 p-1 rounded-2xl mb-6 border border-slate-800/80">
+          <div className="flex bg-black p-1 rounded-2xl mb-6 border border-neutral-800/90">
             <button
               onClick={() => { setActiveTab('create'); setError(null); }}
               className={`flex-1 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center space-x-2 ${
                 activeTab === 'create'
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-obsidian-800 text-gold-300 border border-gold-champagne/40 shadow-gold-glow'
+                  : 'text-silver-matte hover:text-silver-200'
               }`}
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 text-gold-400" />
               <span>Host Meeting</span>
             </button>
             <button
               onClick={() => { setActiveTab('join'); setError(null); }}
               className={`flex-1 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center space-x-2 ${
                 activeTab === 'join'
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-obsidian-800 text-gold-300 border border-gold-champagne/40 shadow-gold-glow'
+                  : 'text-silver-matte hover:text-silver-200'
               }`}
             >
-              <LogIn className="w-4 h-4" />
+              <LogIn className="w-4 h-4 text-gold-400" />
               <span>Join Meeting</span>
             </button>
           </div>
 
           {error && (
-            <div className="mb-4 p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-center space-x-2">
+            <div className="mb-4 p-3 rounded-xl bg-obsidian-850 border border-gold-500/40 text-gold-300 text-xs flex items-center space-x-2">
               <span>{error}</span>
             </div>
           )}
@@ -118,7 +118,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
           {activeTab === 'create' ? (
             <form onSubmit={handleCreateMeeting} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label className="block text-xs font-medium text-silver-300 mb-1.5 uppercase tracking-wide">
                   Your Display Name
                 </label>
                 <input
@@ -126,32 +126,32 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
                   placeholder="e.g. Ram"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full bg-slate-950 text-slate-100 text-sm px-4 py-3 rounded-xl border border-slate-700 focus:outline-none focus:border-blue-500 transition"
+                  className="w-full bg-black text-silver-100 text-sm px-4 py-3 rounded-xl border border-neutral-800 focus:outline-none focus:border-gold-champagne/60 focus:ring-1 focus:ring-gold-champagne/40 transition placeholder:text-zinc-600"
                   required
                 />
               </div>
 
-              <div className="p-3 bg-slate-950/50 rounded-xl border border-slate-800 text-[11px] text-slate-400 space-y-1">
-                <div className="flex items-center space-x-1.5 text-slate-300 font-medium">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Instant Access</span>
+              <div className="p-3 bg-black rounded-xl border border-neutral-800/80 text-[11px] text-silver-matte space-y-1">
+                <div className="flex items-center space-x-1.5 text-gold-300 font-medium">
+                  <ShieldCheck className="w-3.5 h-3.5 text-gold-400" />
+                  <span>Instant Premium Access</span>
                 </div>
-                <div>A unique meeting code will be generated. No sign-up required.</div>
+                <div className="text-zinc-400">A unique meeting code will be generated. No sign-up required.</div>
               </div>
 
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center space-x-2"
+                className="w-full py-3.5 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 disabled:opacity-50 text-gold-300 text-sm font-semibold border border-gold-champagne/50 shadow-gold-glow transition-all flex items-center justify-center space-x-2 uppercase tracking-wide"
               >
-                <Video className="w-4 h-4" />
+                <Video className="w-4 h-4 text-gold-400" />
                 <span>{isLoading ? 'Creating Room...' : 'Start New Meeting'}</span>
               </button>
             </form>
           ) : (
             <form onSubmit={handleJoinMeeting} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label className="block text-xs font-medium text-silver-300 mb-1.5 uppercase tracking-wide">
                   Meeting Code
                 </label>
                 <input
@@ -159,13 +159,13 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
                   placeholder="e.g. JAN-842-195"
                   value={meetingCode}
                   onChange={(e) => setMeetingCode(e.target.value)}
-                  className="w-full bg-slate-950 text-slate-100 text-sm uppercase px-4 py-3 rounded-xl border border-slate-700 focus:outline-none focus:border-blue-500 transition font-mono tracking-wider"
+                  className="w-full bg-black text-gold-300 text-sm uppercase px-4 py-3 rounded-xl border border-neutral-800 focus:outline-none focus:border-gold-champagne/60 focus:ring-1 focus:ring-gold-champagne/40 transition font-mono tracking-widest placeholder:text-zinc-600"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label className="block text-xs font-medium text-silver-300 mb-1.5 uppercase tracking-wide">
                   Your Display Name
                 </label>
                 <input
@@ -173,16 +173,16 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
                   placeholder="e.g. Mahi"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full bg-slate-950 text-slate-100 text-sm px-4 py-3 rounded-xl border border-slate-700 focus:outline-none focus:border-blue-500 transition"
+                  className="w-full bg-black text-silver-100 text-sm px-4 py-3 rounded-xl border border-neutral-800 focus:outline-none focus:border-gold-champagne/60 focus:ring-1 focus:ring-gold-champagne/40 transition placeholder:text-zinc-600"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center space-x-2"
+                className="w-full py-3.5 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 text-gold-300 text-sm font-semibold border border-gold-champagne/50 shadow-gold-glow transition-all flex items-center justify-center space-x-2 uppercase tracking-wide"
               >
-                <LogIn className="w-4 h-4" />
+                <LogIn className="w-4 h-4 text-gold-400" />
                 <span>Enter Meeting</span>
               </button>
             </form>
@@ -190,14 +190,14 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
         </div>
 
         {/* Feature Highlights */}
-        <div className="mt-8 grid grid-cols-2 gap-3 w-full text-center text-xs text-slate-400">
-          <div className="p-3 bg-slate-900/50 rounded-2xl border border-slate-800/80">
-            <span className="font-semibold text-slate-200 block mb-0.5">Isolated Captions</span>
-            <span>Independent language per user</span>
+        <div className="mt-8 grid grid-cols-2 gap-3 w-full text-center text-xs">
+          <div className="p-3 bg-obsidian-900/60 rounded-2xl border border-neutral-800/80">
+            <span className="font-semibold text-gold-300 block mb-0.5">Isolated Captions</span>
+            <span className="text-silver-matte">Independent language per user</span>
           </div>
-          <div className="p-3 bg-slate-900/50 rounded-2xl border border-slate-800/80">
-            <span className="font-semibold text-slate-200 block mb-0.5">Speaker Attributed</span>
-            <span>Preserves who is speaking</span>
+          <div className="p-3 bg-obsidian-900/60 rounded-2xl border border-neutral-800/80">
+            <span className="font-semibold text-gold-300 block mb-0.5">Speaker Attributed</span>
+            <span className="text-silver-matte">Preserves who is speaking</span>
           </div>
         </div>
       </div>

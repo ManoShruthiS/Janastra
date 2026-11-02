@@ -28,22 +28,18 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
   initialIsHost,
   onLeave
 }) => {
-  // Caption state (isolated per participant)
   const [captionsEnabled, setCaptionsEnabled] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [supportedLanguages, setSupportedLanguages] = useState<SupportedLanguage[]>([]);
 
-  // Panels & Modals
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isParticipantsOpen, setIsParticipantsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  // Unread chat counter
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [copiedCode, setCopiedCode] = useState(false);
 
-  // Fetch supported languages from backend on mount
   useEffect(() => {
     fetch(`${getApiBaseUrl()}/api/languages`)
       .then((res) => res.json())
@@ -51,10 +47,8 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
       .catch((err) => console.warn('Could not load languages list:', err));
   }, []);
 
-  // WebRTC Signal handler forwarder ref
   const signalHandlerRef = React.useRef<(senderId: string, signalData: any) => void>(() => {});
 
-  // 1. Meeting Control Socket (signaling, chat, participant list, captions)
   const {
     isConnected,
     isHost,
@@ -75,7 +69,6 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
     }
   });
 
-  // 2. WebRTC Peer Connections & Local Media
   const {
     localStream,
     remoteStreams,
@@ -95,7 +88,6 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
 
   signalHandlerRef.current = handleSignal;
 
-  // 3. Audio Streamer (pipes 16kHz PCM directly to backend for Gnani Prisma v3.0 recognition)
   useAudioStreamer({
     mediaStream: localStream,
     isMuted,
@@ -104,7 +96,6 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
     displayName
   });
 
-  // Inform backend when participant toggles caption or changes language
   const handleToggleCaptions = useCallback(() => {
     const nextState = !captionsEnabled;
     setCaptionsEnabled(nextState);
@@ -116,7 +107,6 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
     sendCaptionPref(newLang, captionsEnabled);
   }, [captionsEnabled, sendCaptionPref]);
 
-  // Handle chat unread badge
   useEffect(() => {
     if (!isChatOpen && chatMessages.length > 0) {
       setUnreadChatCount((prev) => prev + 1);
@@ -142,34 +132,33 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
-  // Find active speaker display name
   const activeSpeaker = participants.find((p) => p.id === activeSpeakerId);
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-slate-950 text-slate-100 overflow-hidden select-none">
+    <div className="flex flex-col h-screen w-screen bg-black text-silver-matte overflow-hidden select-none">
       {/* Top Header Bar */}
-      <header className="h-14 px-5 border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md flex items-center justify-between z-20 shrink-0">
+      <header className="h-14 px-6 border-b border-neutral-800/90 bg-black flex items-center justify-between z-20 shrink-0">
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm shadow-blue-500/50" />
-            <h1 className="text-base font-extrabold tracking-tight text-white">
+            <span className="w-2.5 h-2.5 rounded-full bg-gold-400 shadow-gold-glow" />
+            <h1 className="text-base font-black tracking-wider text-gold-metallic">
               JANASTRA
             </h1>
           </div>
 
-          <div className="h-4 w-px bg-slate-700 mx-2" />
+          <div className="h-4 w-px bg-neutral-800 mx-2" />
 
           {/* Meeting Code Badge */}
           <button
             onClick={handleCopyMeetingCode}
             title="Click to copy meeting code"
-            className="flex items-center space-x-2 bg-slate-800/90 hover:bg-slate-700/80 px-2.5 py-1 rounded-lg border border-slate-700 text-xs font-mono text-slate-200 transition"
+            className="flex items-center space-x-2 bg-obsidian-900 hover:bg-neutral-900 px-3 py-1 rounded-xl border border-neutral-800 text-xs font-mono text-gold-300 transition shadow-inner"
           >
             <span>{meetingCode}</span>
             {copiedCode ? (
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <Check className="w-3.5 h-3.5 text-gold-400" />
             ) : (
-              <Copy className="w-3.5 h-3.5 text-slate-400" />
+              <Copy className="w-3.5 h-3.5 text-silver-matte" />
             )}
           </button>
         </div>
@@ -177,23 +166,23 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
         {/* Right Info: Current caption language & status */}
         <div className="flex items-center space-x-3 text-xs">
           {captionsEnabled && (
-            <div className="flex items-center space-x-1.5 bg-blue-950/60 border border-blue-800/50 px-2.5 py-1 rounded-md text-blue-300">
-              <Subtitles className="w-3.5 h-3.5 text-blue-400" />
-              <span>CC: {selectedLanguage.toUpperCase()}</span>
+            <div className="flex items-center space-x-1.5 bg-obsidian-900 border border-gold-champagne/40 px-3 py-1 rounded-xl text-gold-300 shadow-gold-glow">
+              <Subtitles className="w-3.5 h-3.5 text-gold-400" />
+              <span className="font-mono tracking-wider">CC: {selectedLanguage.toUpperCase()}</span>
             </div>
           )}
 
-          <div className="flex items-center space-x-1.5 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700 text-slate-300">
-            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-            <span>{isConnected ? 'Connected' : 'Connecting...'}</span>
+          <div className="flex items-center space-x-2 bg-obsidian-900 px-3 py-1 rounded-xl border border-neutral-800 text-silver-matte">
+            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-gold-400' : 'bg-neutral-600'}`} />
+            <span className="font-mono text-[11px]">{isConnected ? 'ONLINE' : 'CONNECTING...'}</span>
           </div>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex relative overflow-hidden">
+      <div className="flex-1 flex relative overflow-hidden bg-black">
         {/* Video Area */}
-        <div className="flex-1 flex flex-col relative h-full">
+        <div className="flex-1 flex flex-col relative h-full bg-black">
           <VideoGrid
             localStream={localStream}
             remoteStreams={remoteStreams}

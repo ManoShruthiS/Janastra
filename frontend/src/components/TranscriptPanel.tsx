@@ -53,25 +53,25 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
   };
 
   return (
-    <div className="w-80 sm:w-96 h-full bg-slate-900 border-l border-slate-800 flex flex-col z-30 shadow-2xl transition-all duration-300">
+    <div className="w-80 sm:w-96 h-full bg-black border-l border-neutral-800 flex flex-col z-30 shadow-2xl transition-all duration-300">
       {/* Header */}
-      <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+      <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <Subtitles className="w-5 h-5 text-blue-400" />
-          <h2 className="font-semibold text-slate-100 text-sm sm:text-base">Live Transcript</h2>
+          <Subtitles className="w-5 h-5 text-gold-400" />
+          <h2 className="font-semibold text-gold-300 text-sm sm:text-base tracking-wide">Live Transcript</h2>
         </div>
         <div className="flex items-center space-x-1">
           <button
             onClick={handleExport}
             title="Download Transcript"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition"
+            className="p-1.5 rounded-lg text-silver-matte hover:text-gold-300 hover:bg-neutral-900 transition"
           >
             <Download className="w-4 h-4" />
           </button>
           <button
             onClick={onClose}
             title="Collapse Transcript"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition"
+            className="p-1.5 rounded-lg text-silver-matte hover:text-gold-300 hover:bg-neutral-900 transition"
           >
             <X className="w-4 h-4" />
           </button>
@@ -79,18 +79,18 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       </div>
 
       {/* Language Selector Bar */}
-      <div className="px-4 py-2.5 bg-slate-950/60 border-b border-slate-800/80 flex items-center justify-between">
-        <div className="flex items-center space-x-1.5 text-xs text-slate-400">
-          <Globe className="w-3.5 h-3.5 text-blue-400" />
+      <div className="px-4 py-2.5 bg-obsidian-900 border-b border-neutral-800 flex items-center justify-between">
+        <div className="flex items-center space-x-1.5 text-xs text-silver-matte">
+          <Globe className="w-3.5 h-3.5 text-gold-400" />
           <span>My Language:</span>
         </div>
         <select
           value={selectedLanguage}
           onChange={(e) => onChangeLanguage(e.target.value)}
-          className="bg-slate-800 text-xs text-blue-300 font-semibold px-2 py-1 rounded border border-slate-700 outline-none cursor-pointer hover:border-blue-500"
+          className="bg-black text-xs text-gold-300 font-semibold px-2 py-1 rounded-lg border border-neutral-800 outline-none cursor-pointer hover:border-gold-champagne/40"
         >
           {supportedLanguages.map((lang) => (
-            <option key={lang.code} value={lang.code} className="bg-slate-900 text-slate-100">
+            <option key={lang.code} value={lang.code} className="bg-black text-silver-100">
               {lang.name} ({lang.native})
             </option>
           ))}
@@ -98,15 +98,15 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       </div>
 
       {/* Search Input */}
-      <div className="p-3 border-b border-slate-800/60">
+      <div className="p-3 border-b border-neutral-800/80">
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-500" />
+          <Search className="w-4 h-4 absolute left-3 top-2.5 text-neutral-600" />
           <input
             type="text"
             placeholder="Search transcript..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-950 text-xs text-slate-200 pl-9 pr-3 py-2 rounded-lg border border-slate-800 focus:outline-none focus:border-blue-500 transition"
+            className="w-full bg-obsidian-900 text-xs text-silver-200 pl-9 pr-3 py-2 rounded-lg border border-neutral-800 focus:outline-none focus:border-gold-champagne/50 focus:ring-1 focus:ring-gold-champagne/30 transition placeholder:text-neutral-600"
           />
         </div>
       </div>
@@ -117,7 +117,7 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
         className="flex-1 p-4 overflow-y-auto space-y-3.5 scroll-smooth"
       >
         {filteredCaptions.length === 0 ? (
-          <div className="text-center py-16 text-slate-500 text-xs">
+          <div className="text-center py-16 text-neutral-600 text-xs">
             {searchQuery ? 'No matching transcript lines found.' : 'Captions will appear here continuously as participants speak.'}
           </div>
         ) : (
@@ -131,13 +131,13 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
 
             return (
               <div key={item.id} className="group flex flex-col space-y-1">
-                <div className="flex items-center justify-between text-[11px] text-slate-400">
-                  <span className="font-semibold text-blue-400 group-hover:text-blue-300 transition">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-semibold text-gold-300 tracking-wide">
                     {item.speaker_name}
                   </span>
-                  <span className="text-slate-500 font-mono text-[10px]">{timeStr}</span>
+                  <span className="text-neutral-500 font-mono text-[10px]">{timeStr}</span>
                 </div>
-                <div className="text-xs sm:text-sm text-slate-100 font-normal leading-relaxed bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/60">
+                <div className="text-xs sm:text-sm text-silver-200 font-normal leading-relaxed bg-obsidian-900 p-2.5 rounded-xl border border-neutral-800/90 shadow-inner">
                   {displayText}
                 </div>
               </div>
@@ -147,9 +147,9 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       </div>
 
       {/* Footer Info */}
-      <div className="p-3 bg-slate-950/80 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+      <div className="p-3 bg-obsidian-900 border-t border-neutral-800 text-[11px] text-silver-matte flex items-center justify-between">
         <span>{captions.length} total captions</span>
-        <span className="text-slate-500">Auto-translated</span>
+        <span className="text-gold-400 font-mono text-[10px]">Auto-translated</span>
       </div>
     </div>
   );
