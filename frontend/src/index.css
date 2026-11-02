@@ -4,8 +4,17 @@
 
 @layer base {
   body {
-    @apply m-0 p-0 overflow-hidden bg-black text-silver-matte selection:bg-gold-500/30 selection:text-gold-200;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
     background-color: #000000;
+    color: #9ca3af;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  ::selection {
+    background-color: rgba(212, 175, 55, 0.3);
+    color: #fde68a;
   }
 }
 

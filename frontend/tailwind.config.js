@@ -7,6 +7,9 @@ export default {
   theme: {
     extend: {
       colors: {
+        'silver-matte': '#9ca3af',
+        'silver-metallic': '#c0c0c0',
+        'gold-champagne': '#d4af37',
         obsidian: {
           950: '#000000',
           900: '#050505',
