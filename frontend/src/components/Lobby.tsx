@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Video, Plus, LogIn, Sparkles, Languages, ShieldCheck } from 'lucide-react';
+import { getApiBaseUrl } from '../config';
 
 interface LobbyProps {
   onJoinMeeting: (meetingCode: string, displayName: string, isHost: boolean) => void;
@@ -23,7 +24,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
     setError(null);
 
     try {
-      const res = await fetch('http://localhost:8000/api/meetings/create', {
+      const res = await fetch(`${getApiBaseUrl()}/api/meetings/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ host_display_name: displayName.trim() })

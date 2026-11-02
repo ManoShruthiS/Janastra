@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Participant, CaptionItem, ChatMessage } from '../types/meeting';
+import { getWsBaseUrl } from '../config';
 
 interface UseMeetingSocketProps {
   meetingCode: string;
@@ -28,10 +29,8 @@ export function useMeetingSocket({
   useEffect(() => {
     if (!meetingCode || !participantId) return;
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    // Backend runs on port 8000
-    const host = window.location.hostname || 'localhost';
-    const wsUrl = `${protocol}//${host}:8000/ws/meeting/${encodeURIComponent(meetingCode)}/${encodeURIComponent(participantId)}?display_name=${encodeURIComponent(displayName)}`;
+    const wsBase = getWsBaseUrl();
+    const wsUrl = `${wsBase}/ws/meeting/${encodeURIComponent(meetingCode)}/${encodeURIComponent(participantId)}?display_name=${encodeURIComponent(displayName)}`;
 
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;

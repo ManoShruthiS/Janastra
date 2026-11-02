@@ -10,6 +10,7 @@ import { useMeetingSocket } from '../hooks/useMeetingSocket';
 import { useWebRTC } from '../hooks/useWebRTC';
 import { useAudioStreamer } from '../hooks/useAudioStreamer';
 import { SupportedLanguage } from '../types/meeting';
+import { getApiBaseUrl } from '../config';
 import { Copy, Check, Subtitles } from 'lucide-react';
 
 interface MeetingRoomProps {
@@ -44,7 +45,7 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
 
   // Fetch supported languages from backend on mount
   useEffect(() => {
-    fetch('http://localhost:8000/api/languages')
+    fetch(`${getApiBaseUrl()}/api/languages`)
       .then((res) => res.json())
       .then((data) => setSupportedLanguages(data))
       .catch((err) => console.warn('Could not load languages list:', err));

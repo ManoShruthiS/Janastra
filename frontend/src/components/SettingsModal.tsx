@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Settings, Subtitles, Mic, Video, Server, CheckCircle2, AlertCircle } from 'lucide-react';
 import { SupportedLanguage } from '../types/meeting';
+import { getApiBaseUrl } from '../config';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -45,7 +46,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     }
 
     // Check backend health
-    fetch('http://localhost:8000/api/health')
+    fetch(`${getApiBaseUrl()}/api/health`)
       .then((res) => res.json())
       .then((data) => setHealthStatus(data))
       .catch((err) => console.warn('Backend health check error:', err));

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { getWsBaseUrl } from '../config';
 
 interface UseAudioStreamerProps {
   mediaStream: MediaStream | null;
@@ -24,9 +25,8 @@ export function useAudioStreamer({
   useEffect(() => {
     if (!meetingCode || !participantId) return;
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.hostname || 'localhost';
-    const wsUrl = `${protocol}//${host}:8000/ws/audio/${encodeURIComponent(meetingCode)}/${encodeURIComponent(participantId)}?display_name=${encodeURIComponent(displayName)}`;
+    const wsBase = getWsBaseUrl();
+    const wsUrl = `${wsBase}/ws/audio/${encodeURIComponent(meetingCode)}/${encodeURIComponent(participantId)}?display_name=${encodeURIComponent(displayName)}`;
 
     const ws = new WebSocket(wsUrl);
     ws.binaryType = 'arraybuffer';
