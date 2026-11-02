@@ -80,12 +80,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <div className="bg-obsidian-900 p-4 rounded-2xl border border-neutral-800 space-y-3.5">
               <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-medium text-silver-200">Enable Captions</div>
-                  <div className="text-xs text-silver-matte">
-                    Display real-time continuous captions on your screen
-                  </div>
-                </div>
+                <div className="text-sm font-medium text-silver-200">Enable Captions</div>
                 <button
                   type="button"
                   onClick={onToggleCaptions}
@@ -116,9 +111,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     </option>
                   ))}
                 </select>
-                <p className="mt-1.5 text-[11px] text-neutral-500 italic">
-                  Note: Captions are isolated per participant. Your selected language applies only to your screen.
-                </p>
               </div>
             </div>
           </div>

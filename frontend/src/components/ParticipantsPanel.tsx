@@ -95,10 +95,6 @@ export const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
         })}
       </div>
 
-      {/* Footer Info */}
-      <div className="p-3 bg-obsidian-900 border-t border-neutral-800 text-[11px] text-neutral-500 text-center font-mono">
-        Permanent profiles disabled. Ephemeral session.
-      </div>
     </div>
   );
 };

@@ -50,8 +50,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto space-y-3">
         {messages.length === 0 ? (
-          <div className="text-center py-20 text-neutral-600 text-xs">
-            Messages are temporary and visible only during this call.
+          <div className="text-center py-20 text-neutral-600 text-xs font-mono">
+            No messages yet.
           </div>
         ) : (
           messages.map((m) => {

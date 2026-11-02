@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
-import { Video, Plus, LogIn, Languages, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Video, Plus, LogIn } from 'lucide-react';
 import { getApiBaseUrl } from '../config';
 
 interface LobbyProps {
   onJoinMeeting: (meetingCode: string, displayName: string, isHost: boolean) => void;
+  initialMeetingCode?: string;
 }
 
-export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
+export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode }) => {
   const [activeTab, setActiveTab] = useState<'create' | 'join'>('create');
   const [displayName, setDisplayName] = useState('');
-  const [meetingCode, setMeetingCode] = useState('');
+  const [meetingCode, setMeetingCode] = useState(initialMeetingCode || '');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialMeetingCode) {
+      setMeetingCode(initialMeetingCode);
+      setActiveTab('join');
+    }
+  }, [initialMeetingCode]);
 
   const handleCreateMeeting = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,35 +64,20 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-silver-matte flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Subtle Luxury Ambient Lighting */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gold-champagne/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-zinc-800/20 rounded-full blur-[140px] pointer-events-none" />
-
+    <div className="min-h-screen bg-black text-silver-matte flex flex-col items-center justify-center p-4">
       {/* Main Container */}
-      <div className="w-full max-w-md relative z-10 flex flex-col items-center">
+      <div className="w-full max-w-md flex flex-col items-center">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center space-x-2.5 bg-obsidian-900 border border-gold-champagne/30 px-4 py-1.5 rounded-full mb-4 shadow-gold-glow">
-            <Languages className="w-4 h-4 text-gold-400" />
-            <span className="text-xs font-semibold tracking-wider uppercase text-gold-300">
-              Multilingual Real-Time Captions
-            </span>
-          </div>
-
-          <h1 className="text-5xl font-black tracking-tight mb-2 text-gold-metallic">
+          <h1 className="text-5xl font-black tracking-tight text-gold-metallic">
             JANASTRA
           </h1>
-          <p className="text-xs sm:text-sm text-silver-400 max-w-sm mx-auto leading-relaxed">
-            Live speaker-attributed speech recognition &amp; translation powered by{' '}
-            <span className="text-gold-300 font-semibold">Gnani Prisma v3.0</span>.
-          </p>
         </div>
 
         {/* Card */}
-        <div className="w-full bg-obsidian-900/90 border border-neutral-800 rounded-3xl p-6 shadow-2xl backdrop-blur-2xl">
+        <div className="w-full bg-obsidian-900 border border-neutral-800 rounded-3xl p-6 shadow-2xl">
           {/* Tabs */}
-          <div className="flex bg-black p-1 rounded-2xl mb-6 border border-neutral-800/90">
+          <div className="flex bg-black p-1 rounded-2xl mb-6 border border-neutral-800">
             <button
               onClick={() => { setActiveTab('create'); setError(null); }}
               className={`flex-1 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center space-x-2 ${
@@ -116,7 +109,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
           )}
 
           {activeTab === 'create' ? (
-            <form onSubmit={handleCreateMeeting} className="space-y-4">
+            <form onSubmit={handleCreateMeeting} className="space-y-5">
               <div>
                 <label className="block text-xs font-medium text-silver-300 mb-1.5 uppercase tracking-wide">
                   Your Display Name
@@ -129,14 +122,6 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
                   className="w-full bg-black text-silver-100 text-sm px-4 py-3 rounded-xl border border-neutral-800 focus:outline-none focus:border-gold-champagne/60 focus:ring-1 focus:ring-gold-champagne/40 transition placeholder:text-zinc-600"
                   required
                 />
-              </div>
-
-              <div className="p-3 bg-black rounded-xl border border-neutral-800/80 text-[11px] text-silver-matte space-y-1">
-                <div className="flex items-center space-x-1.5 text-gold-300 font-medium">
-                  <ShieldCheck className="w-3.5 h-3.5 text-gold-400" />
-                  <span>Instant Premium Access</span>
-                </div>
-                <div className="text-zinc-400">A unique meeting code will be generated. No sign-up required.</div>
               </div>
 
               <button
@@ -187,18 +172,6 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting }) => {
               </button>
             </form>
           )}
-        </div>
-
-        {/* Feature Highlights */}
-        <div className="mt-8 grid grid-cols-2 gap-3 w-full text-center text-xs">
-          <div className="p-3 bg-obsidian-900/60 rounded-2xl border border-neutral-800/80">
-            <span className="font-semibold text-gold-300 block mb-0.5">Isolated Captions</span>
-            <span className="text-silver-matte">Independent language per user</span>
-          </div>
-          <div className="p-3 bg-obsidian-900/60 rounded-2xl border border-neutral-800/80">
-            <span className="font-semibold text-gold-300 block mb-0.5">Speaker Attributed</span>
-            <span className="text-silver-matte">Preserves who is speaking</span>
-          </div>
         </div>
       </div>
     </div>

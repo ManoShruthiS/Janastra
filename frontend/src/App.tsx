@@ -51,7 +51,7 @@ export function App() {
       onLeave={handleLeave}
     />
   ) : (
-    <Lobby onJoinMeeting={handleJoin} />
+    <Lobby onJoinMeeting={handleJoin} initialMeetingCode={meetingCode} />
   );
 }
 
