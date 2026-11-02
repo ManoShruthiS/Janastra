@@ -64,21 +64,37 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
   };
 
   return (
-    <div className="min-h-screen bg-black text-silver-matte flex flex-col items-center justify-center p-4">
-      {/* Main Container */}
-      <div className="w-full max-w-md flex flex-col items-center">
-        {/* Brand Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-5xl font-black tracking-tight text-gold-metallic">
+    <div className="min-h-screen bg-black text-silver-matte flex flex-col justify-between items-center px-4 py-8 relative overflow-hidden select-none">
+      {/* Subtle Dark Burgundy Radial Glow behind central content */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[720px] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(74, 6, 26, 0.38) 0%, rgba(42, 2, 14, 0.18) 45%, rgba(0, 0, 0, 0) 75%)',
+          filter: 'blur(40px)'
+        }}
+      />
+
+      {/* Top spacer to balance layout */}
+      <div className="w-full h-4" />
+
+      {/* Central Content */}
+      <div className="w-full max-w-[490px] relative z-10 flex flex-col items-center my-auto">
+        {/* Brand Heading & Tagline */}
+        <div className="text-center mb-10">
+          <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-gold-metallic">
             JANASTRA
           </h1>
+          <p className="text-silver-300 font-light text-base sm:text-lg tracking-wide mt-3">
+            Every voice deserves to be understood.
+          </p>
         </div>
 
-        {/* Card */}
-        <div className="w-full bg-obsidian-900 border border-neutral-800 rounded-3xl p-6 shadow-2xl">
+        {/* Refined Meeting Card */}
+        <div className="w-full bg-obsidian-900/90 border border-neutral-800/90 rounded-3xl p-7 sm:p-8 shadow-2xl backdrop-blur-xl">
           {/* Tabs */}
-          <div className="flex bg-black p-1 rounded-2xl mb-6 border border-neutral-800">
+          <div className="flex bg-black p-1 rounded-2xl mb-7 border border-neutral-800/80">
             <button
+              type="button"
               onClick={() => { setActiveTab('create'); setError(null); }}
               className={`flex-1 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center space-x-2 ${
                 activeTab === 'create'
@@ -90,6 +106,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
               <span>Host Meeting</span>
             </button>
             <button
+              type="button"
               onClick={() => { setActiveTab('join'); setError(null); }}
               className={`flex-1 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center space-x-2 ${
                 activeTab === 'join'
@@ -103,15 +120,15 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
           </div>
 
           {error && (
-            <div className="mb-4 p-3 rounded-xl bg-obsidian-850 border border-gold-500/40 text-gold-300 text-xs flex items-center space-x-2">
+            <div className="mb-5 p-3.5 rounded-xl bg-obsidian-850 border border-gold-500/40 text-gold-300 text-xs flex items-center space-x-2">
               <span>{error}</span>
             </div>
           )}
 
           {activeTab === 'create' ? (
-            <form onSubmit={handleCreateMeeting} className="space-y-5">
+            <form onSubmit={handleCreateMeeting} className="space-y-6">
               <div>
-                <label className="block text-xs font-medium text-silver-300 mb-1.5 uppercase tracking-wide">
+                <label className="block text-xs font-medium text-silver-300 mb-2 uppercase tracking-wider">
                   Your Display Name
                 </label>
                 <input
@@ -119,7 +136,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
                   placeholder="e.g. Ram"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full bg-black text-silver-100 text-sm px-4 py-3 rounded-xl border border-neutral-800 focus:outline-none focus:border-gold-champagne/60 focus:ring-1 focus:ring-gold-champagne/40 transition placeholder:text-zinc-600"
+                  className="w-full bg-black text-silver-100 text-sm px-4 py-3.5 rounded-xl border border-neutral-800 focus:outline-none focus:border-gold-champagne/60 focus:ring-1 focus:ring-gold-champagne/30 transition placeholder:text-zinc-600"
                   required
                 />
               </div>
@@ -127,16 +144,16 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 disabled:opacity-50 text-gold-300 text-sm font-semibold border border-gold-champagne/50 shadow-gold-glow transition-all flex items-center justify-center space-x-2 uppercase tracking-wide"
+                className="w-full py-4 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 disabled:opacity-50 text-gold-300 text-sm font-semibold border border-gold-champagne/45 shadow-gold-glow transition-all flex items-center justify-center space-x-2 uppercase tracking-wider"
               >
                 <Video className="w-4 h-4 text-gold-400" />
                 <span>{isLoading ? 'Creating Room...' : 'Start New Meeting'}</span>
               </button>
             </form>
           ) : (
-            <form onSubmit={handleJoinMeeting} className="space-y-4">
+            <form onSubmit={handleJoinMeeting} className="space-y-5">
               <div>
-                <label className="block text-xs font-medium text-silver-300 mb-1.5 uppercase tracking-wide">
+                <label className="block text-xs font-medium text-silver-300 mb-2 uppercase tracking-wider">
                   Meeting Code
                 </label>
                 <input
@@ -144,13 +161,13 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
                   placeholder="e.g. JAN-842-195"
                   value={meetingCode}
                   onChange={(e) => setMeetingCode(e.target.value)}
-                  className="w-full bg-black text-gold-300 text-sm uppercase px-4 py-3 rounded-xl border border-neutral-800 focus:outline-none focus:border-gold-champagne/60 focus:ring-1 focus:ring-gold-champagne/40 transition font-mono tracking-widest placeholder:text-zinc-600"
+                  className="w-full bg-black text-gold-300 text-sm uppercase px-4 py-3.5 rounded-xl border border-neutral-800 focus:outline-none focus:border-gold-champagne/60 focus:ring-1 focus:ring-gold-champagne/30 transition font-mono tracking-widest placeholder:text-zinc-600"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-silver-300 mb-1.5 uppercase tracking-wide">
+                <label className="block text-xs font-medium text-silver-300 mb-2 uppercase tracking-wider">
                   Your Display Name
                 </label>
                 <input
@@ -158,14 +175,14 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
                   placeholder="e.g. Mahi"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full bg-black text-silver-100 text-sm px-4 py-3 rounded-xl border border-neutral-800 focus:outline-none focus:border-gold-champagne/60 focus:ring-1 focus:ring-gold-champagne/40 transition placeholder:text-zinc-600"
+                  className="w-full bg-black text-silver-100 text-sm px-4 py-3.5 rounded-xl border border-neutral-800 focus:outline-none focus:border-gold-champagne/60 focus:ring-1 focus:ring-gold-champagne/30 transition placeholder:text-zinc-600"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 text-gold-300 text-sm font-semibold border border-gold-champagne/50 shadow-gold-glow transition-all flex items-center justify-center space-x-2 uppercase tracking-wide"
+                className="w-full py-4 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 text-gold-300 text-sm font-semibold border border-gold-champagne/45 shadow-gold-glow transition-all flex items-center justify-center space-x-2 uppercase tracking-wider"
               >
                 <LogIn className="w-4 h-4 text-gold-400" />
                 <span>Enter Meeting</span>
@@ -174,6 +191,13 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
           )}
         </div>
       </div>
+
+      {/* Minimal Footer */}
+      <footer className="w-full text-center relative z-10 pt-6">
+        <p className="text-[11px] sm:text-xs text-neutral-500 font-mono tracking-widest uppercase">
+          Powered by Gnani AI <span className="text-neutral-700 px-1">|</span> Prisma v3.0
+        </p>
+      </footer>
     </div>
   );
 };
