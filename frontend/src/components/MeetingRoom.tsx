@@ -12,6 +12,7 @@ import { useAudioStreamer } from '../hooks/useAudioStreamer';
 import { SupportedLanguage } from '../types/meeting';
 import { getApiBaseUrl } from '../config';
 import { Copy, Check, Subtitles } from 'lucide-react';
+import { HandGesture } from './HandGesture';
 
 interface MeetingRoomProps {
   meetingCode: string;
@@ -39,6 +40,7 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
 
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [handRaised, setHandRaised] = useState(false);
 
   useEffect(() => {
     fetch(`${getApiBaseUrl()}/api/languages`)
@@ -152,14 +154,28 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
           <button
             onClick={handleCopyMeetingCode}
             title="Click to copy meeting code"
-            className="flex items-center space-x-2 bg-obsidian-900 hover:bg-neutral-900 px-3 py-1 rounded-xl border border-neutral-800 text-xs font-mono text-gold-300 transition shadow-inner"
+            className="flex items-center space-x-2 bg-obsidian-900 hover:bg-neutral-900 px-3 py-1 rounded-xl border border-neutral-800 text-xs font-mono text-silver-100 transition shadow-inner"
           >
             <span>{meetingCode}</span>
             {copiedCode ? (
-              <Check className="w-3.5 h-3.5 text-gold-400" />
+              <Check className="w-3.5 h-3.5 text-silver-200" />
             ) : (
               <Copy className="w-3.5 h-3.5 text-silver-matte" />
             )}
+          </button>
+
+          {/* Hand Raise / Gesture Interaction */}
+          <button
+            onClick={() => setHandRaised((prev) => !prev)}
+            title={handRaised ? 'Lower Hand' : 'Raise Hand / Wave'}
+            className={`flex items-center space-x-1.5 px-3 py-1 rounded-xl border text-xs font-mono transition shadow-inner ${
+              handRaised
+                ? 'bg-obsidian-800 border-silver-400 text-silver-100 shadow-silver-glow'
+                : 'bg-obsidian-900 hover:bg-neutral-900 border-neutral-800 text-silver-matte hover:text-silver-100'
+            }`}
+          >
+            <HandGesture size={18} />
+            <span>{handRaised ? 'HAND RAISED' : 'WAVE'}</span>
           </button>
         </div>
 

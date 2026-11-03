@@ -80,6 +80,22 @@
   text-shadow: 0 0 10px rgba(251, 191, 36, 0.55), 0 0 20px rgba(212, 175, 55, 0.25);
 }
 
+/* Waving Hand Gesture */
+@keyframes handWave {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+  60% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.animate-hand-wave {
+  animation: handWave 2s infinite;
+}
+
 /* Sleek obsidian scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
