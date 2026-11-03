@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Video, Plus, LogIn } from 'lucide-react';
 import { getApiBaseUrl } from '../config';
+import { CursorRingField } from './originkit/cursor-ring-field';
 
 interface LobbyProps {
   onJoinMeeting: (meetingCode: string, displayName: string, isHost: boolean) => void;
@@ -73,6 +74,9 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
           filter: 'blur(40px)'
         }}
       />
+
+      {/* OriginKit Cursor Ring Field interactive background */}
+      <CursorRingField />
 
       {/* Top spacer to balance layout */}
       <div className="w-full h-4" />
