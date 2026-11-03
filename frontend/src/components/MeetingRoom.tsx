@@ -141,7 +141,7 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
             <span className="w-2.5 h-2.5 rounded-full bg-gold-400 shadow-gold-glow" />
-            <h1 className="text-base font-black tracking-wider text-gold-metallic">
+            <h1 className="text-base font-black tracking-wider text-tiranga-metallic">
               JANASTRA
             </h1>
           </div>
