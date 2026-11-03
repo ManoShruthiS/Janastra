@@ -15,6 +15,32 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Typewriter effect for tagline
+  const fullTagline = "Every voice deserves to be understood.";
+  const [typedTagline, setTypedTagline] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    if (!isDeleting && typedTagline === fullTagline) {
+      timeoutId = setTimeout(() => setIsDeleting(true), 3800);
+    } else if (isDeleting && typedTagline === '') {
+      timeoutId = setTimeout(() => setIsDeleting(false), 500);
+    } else {
+      const typingSpeed = isDeleting ? 30 : 65;
+      timeoutId = setTimeout(() => {
+        setTypedTagline((prev) =>
+          isDeleting
+            ? fullTagline.substring(0, prev.length - 1)
+            : fullTagline.substring(0, prev.length + 1)
+        );
+      }, typingSpeed);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [typedTagline, isDeleting]);
+
   useEffect(() => {
     if (initialMeetingCode) {
       setMeetingCode(initialMeetingCode);
@@ -88,8 +114,12 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
           <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-tiranga-metallic">
             JANASTRA
           </h1>
-          <p className="text-silver-300 font-light text-base sm:text-lg tracking-wide mt-3">
-            Every voice deserves to be understood.
+          <p className="text-silver-300 font-light text-base sm:text-lg tracking-wide mt-3 min-h-[1.75rem] inline-flex items-center justify-center">
+            <span>{typedTagline}</span>
+            <span
+              className="inline-block w-[2px] h-[1.15em] bg-gold-400 ml-1.5 align-middle animate-cursor-blink shadow-gold-glow"
+              aria-hidden="true"
+            />
           </p>
         </div>
 
