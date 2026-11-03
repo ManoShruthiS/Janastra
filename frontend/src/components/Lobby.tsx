@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Video, Plus, LogIn } from 'lucide-react';
 import { getApiBaseUrl } from '../config';
 import { CursorRingField } from './originkit/cursor-ring-field';
+import { ScrambleText } from './ScrambleText';
 
 interface LobbyProps {
   onJoinMeeting: (meetingCode: string, displayName: string, isHost: boolean) => void;
@@ -229,7 +230,12 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
       {/* Minimal Footer */}
       <footer className="w-full text-center relative z-10 pt-6">
         <p className="text-[11px] sm:text-xs text-neutral-500 font-mono tracking-widest uppercase">
-          Powered by Gnani AI <span className="text-neutral-700 px-1">|</span> Prisma v3.0
+          Powered by{' '}
+          <ScrambleText
+            text="GNANI AI"
+            className="text-silver-300 hover:text-gold-300 font-semibold transition-colors"
+          />{' '}
+          <span className="text-neutral-700 px-1">|</span> Prisma v3.0
         </p>
       </footer>
     </div>
