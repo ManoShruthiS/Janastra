@@ -71,6 +71,15 @@
   animation: cursorBlink 0.9s ease-in-out infinite;
 }
 
+/* Scramble text effect */
+.scramble-text {
+  font-weight: 800;
+  color: #22c55e;
+  font-family: monospace;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+
 /* Sleek obsidian scrollbar */
 ::-webkit-scrollbar {
   width: 5px;

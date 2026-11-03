@@ -233,7 +233,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
           Powered by{' '}
           <ScrambleText
             text="GNANI AI"
-            className="text-silver-300 hover:text-gold-300 font-semibold transition-colors"
+            className="scramble-text px-1"
           />{' '}
           <span className="text-neutral-700 px-1">|</span> Prisma v3.0
         </p>

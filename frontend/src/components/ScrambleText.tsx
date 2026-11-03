@@ -1,91 +1,68 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-const DEFAULT_CHARS = '!<>-_\\/[]{}—=+*^?#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&!?';
 
 interface ScrambleTextProps {
   text: string;
   className?: string;
-  autoTriggerInterval?: number; // ms to periodically re-scramble (0 to disable)
-  scrambleSpeed?: number; // frames per character resolution
-  triggerOnHover?: boolean;
+  pauseDuration?: number; // ms to pause after resolving before restarting (default 2500)
 }
 
 export const ScrambleText: React.FC<ScrambleTextProps> = ({
-  text,
+  text = 'GNANI AI',
   className = '',
-  autoTriggerInterval = 7000,
-  scrambleSpeed = 2.5,
-  triggerOnHover = true
+  pauseDuration = 2500
 }) => {
   const [displayText, setDisplayText] = useState(text);
-  const frameRef = useRef(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const isScramblingRef = useRef(false);
-
-  const startScramble = useCallback(() => {
-    if (isScramblingRef.current) return;
-    isScramblingRef.current = true;
-    frameRef.current = 0;
-
-    if (intervalRef.current) clearInterval(intervalRef.current);
-
-    intervalRef.current = setInterval(() => {
-      frameRef.current += 1;
-      let completedCount = 0;
-      let scrambled = '';
-
-      for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        if (char === ' ') {
-          scrambled += ' ';
-          completedCount += 1;
-          continue;
-        }
-
-        // Lock in characters progressively
-        const lockFrame = Math.floor((i + 1) * scrambleSpeed);
-        if (frameRef.current >= lockFrame) {
-          scrambled += char;
-          completedCount += 1;
-        } else {
-          const randomChar = DEFAULT_CHARS[Math.floor(Math.random() * DEFAULT_CHARS.length)];
-          scrambled += randomChar;
-        }
-      }
-
-      setDisplayText(scrambled);
-
-      if (completedCount === text.length) {
-        if (intervalRef.current) clearInterval(intervalRef.current);
-        intervalRef.current = null;
-        isScramblingRef.current = false;
-        setDisplayText(text);
-      }
-    }, 35);
-  }, [text, scrambleSpeed]);
+  const isHoveredRef = useRef(false);
 
   useEffect(() => {
-    // Initial scramble on mount
-    startScramble();
+    let iteration = 0;
+    let frame = 0;
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let isCancelled = false;
 
-    let periodicTimer: ReturnType<typeof setInterval> | null = null;
-    if (autoTriggerInterval > 0) {
-      periodicTimer = setInterval(() => {
-        startScramble();
-      }, autoTriggerInterval);
+    function scramble() {
+      if (isCancelled) return;
+      frame++;
+
+      // Only update every 3rd frame for slower effect
+      if (frame % 3 === 0) {
+        const next = text
+          .split('')
+          .map((char, i) => {
+            if (char === ' ') return ' ';
+            if (i < iteration) return text[i];
+            return CHARS[Math.floor(Math.random() * CHARS.length)];
+          })
+          .join('');
+
+        setDisplayText(next);
+        iteration += 0.15;
+      }
+
+      if (iteration < text.length) {
+        timeoutId = setTimeout(scramble, 50);
+      } else {
+        setDisplayText(text);
+        iteration = 0;
+        frame = 0;
+        timeoutId = setTimeout(scramble, pauseDuration);
+      }
     }
 
+    scramble();
+
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (periodicTimer) clearInterval(periodicTimer);
+      isCancelled = true;
+      clearTimeout(timeoutId);
     };
-  }, [startScramble, autoTriggerInterval]);
+  }, [text, pauseDuration]);
 
   return (
     <span
-      className={`inline-block select-none cursor-default font-mono transition-colors duration-200 ${className}`}
-      onMouseEnter={triggerOnHover ? startScramble : undefined}
-      title="Gnani AI"
+      className={`scramble-text inline-block font-mono font-extrabold cursor-default select-none transition-all ${className}`}
+      data-text={text}
     >
       {displayText}
     </span>
