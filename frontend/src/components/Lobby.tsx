@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Video, Plus, LogIn } from 'lucide-react';
 import { getApiBaseUrl } from '../config';
+import { TirangaWaves } from './TirangaWaves';
 
 interface LobbyProps {
   onJoinMeeting: (meetingCode: string, displayName: string, isHost: boolean) => void;
@@ -198,6 +199,9 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
           Powered by Gnani AI <span className="text-neutral-700 px-1">|</span> Prisma v3.0
         </p>
       </footer>
+
+      {/* Indian Flag Animated Waves */}
+      <TirangaWaves />
     </div>
   );
 };
