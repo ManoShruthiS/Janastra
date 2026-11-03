@@ -157,9 +157,9 @@ export const CursorRingField: React.FC<CursorRingFieldProps> = ({
           mouse.y,
           ringRadius + ringWidth * 0.8
         );
-        ringGrad.addColorStop(0, 'rgba(212, 175, 55, 0)');
-        ringGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.05)');
-        ringGrad.addColorStop(0.7, 'rgba(255, 103, 31, 0.03)');
+        ringGrad.addColorStop(0, 'rgba(210, 210, 220, 0)');
+        ringGrad.addColorStop(0.5, 'rgba(210, 210, 225, 0.06)');
+        ringGrad.addColorStop(0.7, 'rgba(180, 180, 195, 0.03)');
         ringGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
         ctx.fillStyle = ringGrad;
@@ -239,11 +239,11 @@ export const CursorRingField: React.FC<CursorRingFieldProps> = ({
         ctx.closePath();
 
         if (p.intensity > 0.05) {
-          // Dynamic active state: gradient from metallic platinum to gold
-          const alpha = 0.2 + p.intensity * 0.75;
-          ctx.fillStyle = `rgba(235, 195, 80, ${alpha})`;
-          ctx.shadowColor = 'rgba(212, 175, 55, 0.4)';
-          ctx.shadowBlur = p.intensity * 10;
+          // Dynamic active state: sleek metallic platinum silver
+          const alpha = 0.25 + p.intensity * 0.75;
+          ctx.fillStyle = `rgba(228, 228, 235, ${alpha})`;
+          ctx.shadowColor = 'rgba(212, 212, 220, 0.45)';
+          ctx.shadowBlur = p.intensity * 8;
         } else {
           ctx.fillStyle = baseColor;
           ctx.shadowBlur = 0;
