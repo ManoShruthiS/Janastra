@@ -44,7 +44,11 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
   useEffect(() => {
     fetch(`${getApiBaseUrl()}/api/languages`)
       .then((res) => res.json())
-      .then((data) => setSupportedLanguages(data))
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setSupportedLanguages(data);
+        }
+      })
       .catch((err) => console.warn('Could not load languages list:', err));
 
     fetch(`${getApiBaseUrl()}/api/health`)

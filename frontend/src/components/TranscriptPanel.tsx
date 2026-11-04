@@ -52,6 +52,21 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
     URL.revokeObjectURL(url);
   };
 
+  const fallbackLanguages = [
+    { code: 'en', name: 'English', native: 'English' },
+    { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
+    { code: 'ta', name: 'Tamil', native: 'தமிழ்' },
+    { code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ' },
+    { code: 'te', name: 'Telugu', native: 'తెలుగు' },
+    { code: 'bn', name: 'Bengali', native: 'বাংলা' },
+    { code: 'mr', name: 'Marathi', native: 'मराठी' },
+    { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી' },
+    { code: 'ml', name: 'Malayalam', native: 'മലയാളം' },
+    { code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ' },
+  ];
+
+  const langs = Array.isArray(supportedLanguages) && supportedLanguages.length > 0 ? supportedLanguages : fallbackLanguages;
+
   return (
     <div className="w-full sm:w-96 md:w-[420px] h-full bg-obsidian-950 border-l border-neutral-800/90 flex flex-col z-30 shadow-2xl transition-all duration-300">
       {/* Header */}
@@ -91,7 +106,7 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
           onChange={(e) => onChangeLanguage(e.target.value)}
           className="bg-black text-xs text-silver-100 font-semibold px-2 py-1 rounded-lg border border-neutral-800 outline-none cursor-pointer hover:border-neutral-700 transition"
         >
-          {supportedLanguages.map((lang) => (
+          {langs.map((lang) => (
             <option key={lang.code} value={lang.code} className="bg-black text-silver-100">
               {lang.name} ({lang.native})
             </option>

@@ -26,6 +26,24 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [selectedAudioDevice, setSelectedAudioDevice] = useState('');
   const [selectedVideoDevice, setSelectedVideoDevice] = useState('');
 
+  const fallbackLanguages = [
+    { code: 'en', name: 'English', native: 'English' },
+    { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
+    { code: 'ta', name: 'Tamil', native: 'தமிழ்' },
+    { code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ' },
+    { code: 'te', name: 'Telugu', native: 'తెలుగు' },
+    { code: 'bn', name: 'Bengali', native: 'বাংলা' },
+    { code: 'mr', name: 'Marathi', native: 'मराठी' },
+    { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી' },
+    { code: 'ml', name: 'Malayalam', native: 'മലയാളം' },
+    { code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ' },
+  ];
+
+  const langs =
+    Array.isArray(supportedLanguages) && supportedLanguages.length > 0
+      ? supportedLanguages
+      : fallbackLanguages;
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -100,7 +118,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   onChange={(e) => onChangeLanguage(e.target.value)}
                   className="w-full bg-black border border-neutral-800 rounded-lg p-2.5 text-xs sm:text-sm text-silver-100 focus:outline-none focus:border-neutral-600 transition cursor-pointer"
                 >
-                  {supportedLanguages.map((lang) => (
+                  {langs.map((lang) => (
                     <option key={lang.code} value={lang.code} className="bg-black text-silver-100">
                       {lang.name} ({lang.native})
                     </option>

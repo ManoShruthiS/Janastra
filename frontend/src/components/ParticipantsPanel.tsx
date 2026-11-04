@@ -5,7 +5,7 @@ import { Participant, SupportedLanguage } from '../types/meeting';
 interface ParticipantsPanelProps {
   participants: Participant[];
   currentUserId: string;
-  supportedLanguages: SupportedLanguage[];
+  supportedLanguages?: SupportedLanguage[];
   onClose: () => void;
 }
 
@@ -15,38 +15,37 @@ export const ParticipantsPanel: React.FC<ParticipantsPanelProps> = ({
   onClose
 }) => {
   return (
-    <div className="w-80 sm:w-96 h-full bg-obsidian-950 border-l border-neutral-800/90 flex flex-col z-30 shadow-2xl">
-      {/* Header */}
-      <div className="p-4 border-b border-neutral-800/90 flex items-center justify-between bg-black">
-        <div className="flex items-center space-x-2">
-          <Users className="w-5 h-5 text-silver-200" />
-          <h2 className="font-bold text-white text-sm sm:text-base tracking-wide">
-            Participants ({participants.length})
-          </h2>
+    <div className="absolute bottom-4 right-4 sm:right-20 z-40 w-auto min-w-[190px] max-w-[280px] bg-black/90 backdrop-blur-2xl hairline-border rounded-2xl shadow-2xl p-2.5 flex flex-col select-none animate-caption-glide">
+      {/* Compact Header */}
+      <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-white/[0.08] px-1">
+        <div className="flex items-center space-x-1.5 text-xs font-semibold text-white">
+          <Users className="w-3.5 h-3.5 text-silver-300" />
+          <span>Participants ({participants.length})</span>
         </div>
         <button
           onClick={onClose}
-          className="p-1.5 rounded-lg text-silver-matte hover:text-white hover:bg-neutral-900 border border-transparent hover:border-neutral-800 transition active:scale-95"
+          title="Close"
+          className="p-1 rounded-md text-silver-matte hover:text-white hover:bg-neutral-800 transition active:scale-95"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      {/* Participants List - Just Clean Participant Names */}
-      <div className="flex-1 p-3 overflow-y-auto space-y-1.5">
+      {/* Floating List - Tightly fits the exact count and width of names */}
+      <div className="space-y-1 max-h-56 overflow-y-auto">
         {participants.map((p) => {
           const isMe = p.id === currentUserId;
 
           return (
             <div
               key={p.id}
-              className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-obsidian-900 hairline-border-subtle hover:border-white/10 transition"
+              className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-obsidian-900/90 hairline-border-subtle hover:border-white/10 transition"
             >
-              <span className="text-sm font-medium text-white tracking-wide">
+              <span className="text-xs sm:text-sm font-medium text-white truncate max-w-[180px]">
                 {p.display_name}
               </span>
               {isMe && (
-                <span className="text-xs text-silver-matte font-mono">
+                <span className="text-[10px] text-silver-matte font-mono ml-2 shrink-0">
                   You
                 </span>
               )}

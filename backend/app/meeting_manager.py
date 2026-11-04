@@ -51,19 +51,10 @@ class MeetingManager:
         while code in self.meetings:
             code = generate_meeting_code()
 
-        host_id = f"user_{int(time.time()*1000)}_{random.randint(100, 999)}"
-        session = MeetingSession(code, host_id)
-        
-        # Add host as first participant
-        host_participant = Participant(
-            id=host_id,
-            display_name=host_display_name or "Host",
-            is_host=True
-        )
-        session.participants[host_id] = host_participant
+        session = MeetingSession(code, host_id="")
         self.meetings[code] = session
-        logger.info(f"Created meeting {code} with host {host_id} ({host_display_name})")
-        return code, host_id
+        logger.info(f"Created meeting {code} for host ({host_display_name})")
+        return code, ""
 
     def get_meeting(self, code: str) -> Optional[MeetingSession]:
         return self.meetings.get(code.upper().strip())
@@ -83,10 +74,12 @@ class MeetingManager:
 
         # Register or update participant
         if participant_id not in session.participants:
-            is_first = len(session.participants) == 0
+            is_first = len(session.participants) == 0 or not session.host_id
+            if is_first:
+                session.host_id = participant_id
             session.participants[participant_id] = Participant(
                 id=participant_id,
-                display_name=display_name or "Guest",
+                display_name=display_name or ("Host" if is_first else "Guest"),
                 is_host=is_first
             )
         else:

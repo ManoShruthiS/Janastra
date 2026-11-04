@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Mic, MicOff, VideoOff, Crown } from 'lucide-react';
+import { MicOff, VideoOff } from 'lucide-react';
 import { Participant } from '../types/meeting';
 
 interface VideoTileProps {
@@ -77,21 +77,14 @@ const VideoTile: React.FC<VideoTileProps> = ({
         <span className="text-xs font-semibold text-silver-200 flex items-center space-x-1.5">
           <span className="text-white tracking-wide">{displayName}</span>
           {isMe && <span className="text-[10px] text-silver-matte font-normal">(You)</span>}
-          {isHost && (
-            <span title="Meeting Host">
-              <Crown className="w-3.5 h-3.5 text-silver-300" />
-            </span>
-          )}
         </span>
 
-        {/* Microphone indicator */}
-        <span className="pl-1">
-          {isMuted ? (
+        {/* Microphone indicator - discreet muted status */}
+        {isMuted && (
+          <span className="pl-1" title="Muted">
             <MicOff className="w-3.5 h-3.5 text-silver-matte" />
-          ) : (
-            <Mic className="w-3.5 h-3.5 text-white" />
-          )}
-        </span>
+          </span>
+        )}
       </div>
 
       {/* Speaking Indicator: Minimalist Silver Dot Tag */}
