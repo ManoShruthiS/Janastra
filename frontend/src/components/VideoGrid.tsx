@@ -10,7 +10,6 @@ interface VideoTileProps {
   isVideoOff?: boolean;
   isHost?: boolean;
   isSpeaking?: boolean;
-  isScreenSharing?: boolean;
 }
 
 const VideoTile: React.FC<VideoTileProps> = ({
@@ -19,9 +18,7 @@ const VideoTile: React.FC<VideoTileProps> = ({
   isMe,
   isMuted,
   isVideoOff,
-  isHost,
-  isSpeaking,
-  isScreenSharing
+  isSpeaking
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -46,9 +43,7 @@ const VideoTile: React.FC<VideoTileProps> = ({
           autoPlay
           playsInline
           muted={isMe} // Always mute local video playback to prevent feedback
-          className={`w-full h-full ${
-            isScreenSharing ? 'object-contain bg-black' : 'object-cover'
-          } ${isMe && !isScreenSharing ? 'scale-x-[-1]' : ''}`}
+          className={`w-full h-full object-cover ${isMe ? 'scale-x-[-1]' : ''}`}
         />
       ) : (
         <div className="flex flex-col items-center justify-center space-y-2.5">
@@ -105,7 +100,6 @@ interface VideoGridProps {
   isHost: boolean;
   isMuted: boolean;
   isVideoOff: boolean;
-  isScreenSharing: boolean;
   activeSpeakerId: string | null;
   myParticipantId: string;
   participants: Participant[];
@@ -118,7 +112,6 @@ export const VideoGrid: React.FC<VideoGridProps> = ({
   isHost,
   isMuted,
   isVideoOff,
-  isScreenSharing,
   activeSpeakerId,
   myParticipantId,
   participants
@@ -146,7 +139,6 @@ export const VideoGrid: React.FC<VideoGridProps> = ({
           isVideoOff={isVideoOff}
           isHost={isHost}
           isSpeaking={activeSpeakerId === myParticipantId}
-          isScreenSharing={isScreenSharing}
         />
 
         {/* Remote Participants Tiles */}
@@ -163,7 +155,6 @@ export const VideoGrid: React.FC<VideoGridProps> = ({
               isVideoOff={p.is_video_off}
               isHost={p.is_host}
               isSpeaking={activeSpeakerId === p.id}
-              isScreenSharing={p.is_screen_sharing}
             />
           );
         })}

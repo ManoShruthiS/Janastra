@@ -3,9 +3,7 @@ import { VideoGrid } from './VideoGrid';
 import { ControlBar } from './ControlBar';
 import { CaptionOverlay } from './CaptionOverlay';
 import { TranscriptPanel } from './TranscriptPanel';
-import { ChatPanel } from './ChatPanel';
 import { ParticipantsPanel } from './ParticipantsPanel';
-import { SettingsModal } from './SettingsModal';
 import { useMeetingSocket } from '../hooks/useMeetingSocket';
 import { useWebRTC } from '../hooks/useWebRTC';
 import { useAudioStreamer } from '../hooks/useAudioStreamer';
@@ -33,11 +31,8 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
   const [supportedLanguages, setSupportedLanguages] = useState<SupportedLanguage[]>([]);
 
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
   const [isParticipantsOpen, setIsParticipantsOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [copiedCode, setCopiedCode] = useState(false);
   const [gnaniConfigured, setGnaniConfigured] = useState<boolean | null>(null);
 
@@ -67,11 +62,9 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
     isHost,
     participants,
     captions,
-    chatMessages,
     activeSpeakerId,
     sendSignal,
     sendCaptionPref,
-    sendChatMessage,
     sendMediaState
   } = useMeetingSocket({
     meetingCode,
@@ -87,10 +80,8 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
     remoteStreams,
     isMuted,
     isVideoOff,
-    isScreenSharing,
     toggleMic,
     toggleCam,
-    toggleScreenShare,
     handleSignal
   } = useWebRTC({
     myParticipantId: participantId,
@@ -120,23 +111,8 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
     sendCaptionPref(newLang, captionsEnabled);
   }, [captionsEnabled, sendCaptionPref]);
 
-  useEffect(() => {
-    if (!isChatOpen && chatMessages.length > 0) {
-      setUnreadChatCount((prev) => prev + 1);
-    }
-  }, [chatMessages.length, isChatOpen]);
-
-  const handleOpenChat = () => {
-    setIsChatOpen((prev) => {
-      if (!prev) setUnreadChatCount(0);
-      return !prev;
-    });
-    setIsParticipantsOpen(false);
-  };
-
   const handleOpenParticipants = () => {
     setIsParticipantsOpen((prev) => !prev);
-    setIsChatOpen(false);
   };
 
   const handleCopyMeetingCode = () => {
@@ -196,13 +172,12 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
             isHost={isHost || initialIsHost}
             isMuted={isMuted}
             isVideoOff={isVideoOff}
-            isScreenSharing={isScreenSharing}
             activeSpeakerId={activeSpeakerId}
             myParticipantId={participantId}
             participants={participants}
           />
 
-          {/* Continuous Bottom Caption Overlay */}
+          {/* Continuous Bottom Caption Overlay (Primary Hero) */}
           {captionsEnabled && !isTranscriptOpen && (
             <CaptionOverlay
               captions={captions}
@@ -213,7 +188,7 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
           )}
         </div>
 
-        {/* Expandable / Collapsible Side Panels */}
+        {/* Expandable / Collapsible Multilingual Transcript Panel */}
         {isTranscriptOpen && (
           <TranscriptPanel
             captions={captions}
@@ -224,15 +199,7 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
           />
         )}
 
-        {isChatOpen && (
-          <ChatPanel
-            messages={chatMessages}
-            currentUserId={participantId}
-            onSendMessage={sendChatMessage}
-            onClose={() => setIsChatOpen(false)}
-          />
-        )}
-
+        {/* Compact Auto-Fitting Floating Participants Card */}
         {isParticipantsOpen && (
           <ParticipantsPanel
             participants={participants}
@@ -243,37 +210,19 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
         )}
       </div>
 
-      {/* Control Bar: exactly the 8 specified meeting controls */}
+      {/* Control Bar: Pure Essential Indic Meeting Tools */}
       <ControlBar
         isMuted={isMuted}
         isVideoOff={isVideoOff}
-        isScreenSharing={isScreenSharing}
-        isChatOpen={isChatOpen}
         isParticipantsOpen={isParticipantsOpen}
         captionsEnabled={captionsEnabled}
         selectedLanguage={selectedLanguage}
         supportedLanguages={supportedLanguages}
         participantCount={participants.length}
-        unreadChatCount={unreadChatCount}
         gnaniConfigured={gnaniConfigured}
         onToggleMic={toggleMic}
         onToggleCam={toggleCam}
-        onToggleScreenShare={toggleScreenShare}
-        onToggleChat={handleOpenChat}
         onToggleParticipants={handleOpenParticipants}
-        onToggleCaptions={handleToggleCaptions}
-        onChangeLanguage={handleChangeLanguage}
-        onOpenSettings={() => setIsSettingsOpen(true)}
-        onLeaveMeeting={onLeave}
-      />
-
-      {/* Settings Modal */}
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        captionsEnabled={captionsEnabled}
-        selectedLanguage={selectedLanguage}
-        supportedLanguages={supportedLanguages}
         onToggleCaptions={handleToggleCaptions}
         onChangeLanguage={handleChangeLanguage}
       />

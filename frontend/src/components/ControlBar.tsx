@@ -4,58 +4,41 @@ import {
   MicOff,
   Video,
   VideoOff,
-  ScreenShare,
-  MessageSquare,
   Users,
-  Subtitles,
-  Settings
+  Subtitles
 } from 'lucide-react';
 import { SupportedLanguage } from '../types/meeting';
 
 interface ControlBarProps {
   isMuted: boolean;
   isVideoOff: boolean;
-  isScreenSharing: boolean;
-  isChatOpen: boolean;
   isParticipantsOpen: boolean;
   captionsEnabled: boolean;
   selectedLanguage: string;
   supportedLanguages: SupportedLanguage[];
   participantCount: number;
-  unreadChatCount: number;
   gnaniConfigured: boolean | null;
   onToggleMic: () => void;
   onToggleCam: () => void;
-  onToggleScreenShare: () => void;
-  onToggleChat: () => void;
   onToggleParticipants: () => void;
   onToggleCaptions: () => void;
   onChangeLanguage: (lang: string) => void;
-  onOpenSettings: () => void;
-  onLeaveMeeting?: () => void;
 }
 
 export const ControlBar: React.FC<ControlBarProps> = ({
   isMuted,
   isVideoOff,
-  isScreenSharing,
-  isChatOpen,
   isParticipantsOpen,
   captionsEnabled,
   selectedLanguage,
   supportedLanguages,
   participantCount,
-  unreadChatCount,
   gnaniConfigured,
   onToggleMic,
   onToggleCam,
-  onToggleScreenShare,
-  onToggleChat,
   onToggleParticipants,
   onToggleCaptions,
-  onChangeLanguage,
-  onOpenSettings,
-  onLeaveMeeting
+  onChangeLanguage
 }) => {
   // Fallback if languages are still fetching from backend
   const fallbackLanguages = [
@@ -111,8 +94,8 @@ export const ControlBar: React.FC<ControlBarProps> = ({
         </div>
       </div>
 
-      {/* Center: The EXACT 8 Meeting Controls (Modern Minimalist Dock) */}
-      <div className="flex items-center justify-center space-x-2 sm:space-x-3 flex-shrink-0">
+      {/* Center: The Core Essential Controls (Minimalist Indic Dock) */}
+      <div className="flex items-center justify-center space-x-3 flex-shrink-0">
         {/* 1. Microphone */}
         <button
           onClick={onToggleMic}
@@ -139,38 +122,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           {isVideoOff ? <VideoOff className="w-5 h-5 text-silver-matte" /> : <Video className="w-5 h-5 text-white" />}
         </button>
 
-        {/* 3. Screen Sharing */}
-        <button
-          onClick={onToggleScreenShare}
-          title={isScreenSharing ? 'Stop Screen Sharing' : 'Share Screen'}
-          className={`relative w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-150 active:scale-95 ${
-            isScreenSharing
-              ? 'bg-white/[0.12] text-white border border-white/30 shadow-sm'
-              : 'bg-obsidian-900 text-silver-matte border border-white/[0.08] hover:border-white/20 hover:text-white'
-          }`}
-        >
-          <ScreenShare className="w-5 h-5" />
-        </button>
-
-        {/* 4. Chat */}
-        <button
-          onClick={onToggleChat}
-          title="Meeting Chat"
-          className={`relative w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-150 active:scale-95 ${
-            isChatOpen
-              ? 'bg-white/[0.12] text-white border border-white/25 shadow-sm'
-              : 'bg-obsidian-900 text-silver-matte border border-white/[0.08] hover:border-white/20 hover:text-white'
-          }`}
-        >
-          <MessageSquare className="w-5 h-5" />
-          {unreadChatCount > 0 && !isChatOpen && (
-            <span className="absolute -top-1 -right-1 bg-white text-black text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center shadow-md">
-              {unreadChatCount > 9 ? '9+' : unreadChatCount}
-            </span>
-          )}
-        </button>
-
-        {/* 5. Participants */}
+        {/* 3. Participants (Opens Auto-Fitting Floating Card) */}
         <button
           onClick={onToggleParticipants}
           title="Participants List"
@@ -184,15 +136,6 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           <span className="absolute -top-1 -right-1 bg-neutral-800 text-silver-100 text-[10px] font-bold rounded-full px-1.5 py-0.5 border border-white/10">
             {participantCount}
           </span>
-        </button>
-
-        {/* 6. Settings */}
-        <button
-          onClick={onOpenSettings}
-          title="Settings"
-          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-obsidian-900 text-silver-matte border border-white/[0.08] hover:border-white/20 hover:text-white transition-all duration-150 active:scale-95"
-        >
-          <Settings className="w-5 h-5" />
         </button>
       </div>
 
