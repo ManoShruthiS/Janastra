@@ -43,6 +43,12 @@
   -webkit-text-fill-color: transparent;
 }
 
+.text-gold-burgundy {
+  background: linear-gradient(125deg, #fef08a 0%, #fbbf24 30%, #d4af37 55%, #be123c 82%, #881337 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .text-silver-metallic {
   background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 40%, #71717a 100%);
   -webkit-background-clip: text;

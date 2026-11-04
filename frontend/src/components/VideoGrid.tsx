@@ -33,10 +33,10 @@ const VideoTile: React.FC<VideoTileProps> = ({
 
   return (
     <div
-      className={`relative w-full h-full min-h-[220px] rounded-3xl overflow-hidden bg-black transition-all duration-300 flex items-center justify-center shadow-2xl ${
+      className={`relative w-full h-full min-h-[160px] sm:min-h-[190px] max-h-[48vh] rounded-2xl overflow-hidden bg-obsidian-950 transition-all duration-300 flex items-center justify-center shadow-xl ${
         isSpeaking
-          ? 'border border-gold-champagne shadow-gold-glow ring-1 ring-gold-champagne/50'
-          : 'border border-neutral-900 hover:border-neutral-800'
+          ? 'border border-gold-champagne/80 ring-1 ring-gold-champagne/40'
+          : 'border border-neutral-850 hover:border-neutral-800'
       }`}
     >
       {/* Video Element */}
@@ -51,12 +51,12 @@ const VideoTile: React.FC<VideoTileProps> = ({
           } ${isMe && !isScreenSharing ? 'scale-x-[-1]' : ''}`}
         />
       ) : (
-        <div className="flex flex-col items-center justify-center space-y-3">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-obsidian-900 border border-gold-champagne/40 flex items-center justify-center text-xl sm:text-2xl font-bold text-gold-300 uppercase shadow-gold-glow">
+        <div className="flex flex-col items-center justify-center space-y-2.5">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-obsidian-900 border border-gold-champagne/40 flex items-center justify-center text-lg sm:text-xl font-bold text-gold-300 uppercase shadow-sm">
             {displayName.charAt(0) || 'U'}
           </div>
-          <span className="text-silver-matte text-xs flex items-center space-x-1.5 font-mono">
-            <VideoOff className="w-3.5 h-3.5 text-silver-matte" />
+          <span className="text-silver-matte text-[11px] sm:text-xs flex items-center space-x-1.5 font-mono">
+            <VideoOff className="w-3 h-3 text-silver-matte" />
             <span>Camera Off</span>
           </span>
         </div>
@@ -124,16 +124,16 @@ export const VideoGrid: React.FC<VideoGridProps> = ({
   const totalCount = otherParticipants.length + 1;
 
   const getGridClass = () => {
-    if (totalCount === 1) return 'grid-cols-1 max-w-4xl max-h-[80vh]';
-    if (totalCount === 2) return 'grid-cols-1 md:grid-cols-2 max-w-6xl';
-    if (totalCount <= 4) return 'grid-cols-1 sm:grid-cols-2 max-w-6xl';
-    if (totalCount <= 6) return 'grid-cols-2 sm:grid-cols-3 max-w-7xl';
-    return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 max-w-7xl';
+    if (totalCount === 1) return 'grid-cols-1 max-w-2xl max-h-[50vh]';
+    if (totalCount === 2) return 'grid-cols-1 sm:grid-cols-2 max-w-4xl max-h-[52vh]';
+    if (totalCount <= 4) return 'grid-cols-1 sm:grid-cols-2 max-w-5xl max-h-[54vh]';
+    if (totalCount <= 6) return 'grid-cols-2 sm:grid-cols-3 max-w-6xl max-h-[54vh]';
+    return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 max-w-6xl max-h-[55vh]';
   };
 
   return (
-    <div className="flex-1 w-full h-full p-4 flex items-center justify-center overflow-hidden bg-black">
-      <div className={`grid gap-4 w-full h-full items-center justify-center ${getGridClass()}`}>
+    <div className="w-full flex-1 p-3 sm:p-4 flex items-center justify-center overflow-hidden bg-black">
+      <div className={`grid gap-3 sm:gap-4 w-full items-center justify-center ${getGridClass()}`}>
         {/* Local Participant Tile */}
         <VideoTile
           stream={localStream}

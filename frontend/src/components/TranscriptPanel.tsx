@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Download, Search, Subtitles, Globe } from 'lucide-react';
+import { Minimize2, Download, Search, Subtitles, Globe } from 'lucide-react';
 import { CaptionItem, SupportedLanguage } from '../types/meeting';
 
 interface TranscriptPanelProps {
@@ -53,41 +53,43 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
   };
 
   return (
-    <div className="w-80 sm:w-96 h-full bg-black border-l border-neutral-800 flex flex-col z-30 shadow-2xl transition-all duration-300">
+    <div className="w-full sm:w-96 md:w-[420px] h-full bg-obsidian-950 border-l border-neutral-800/90 flex flex-col z-30 shadow-2xl transition-all duration-300">
       {/* Header */}
-      <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
+      <div className="p-4 border-b border-neutral-800/90 flex items-center justify-between bg-black">
         <div className="flex items-center space-x-2">
           <Subtitles className="w-5 h-5 text-gold-400" />
-          <h2 className="font-semibold text-gold-300 text-sm sm:text-base tracking-wide">Live Transcript</h2>
+          <h2 className="font-bold text-gold-300 text-sm sm:text-base tracking-wide">Live Multilingual Transcript</h2>
         </div>
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-1.5">
           <button
             onClick={handleExport}
-            title="Download Transcript"
-            className="p-1.5 rounded-lg text-silver-matte hover:text-gold-300 hover:bg-neutral-900 transition"
+            title="Download Transcript as Text File"
+            className="p-1.5 rounded-lg text-silver-matte hover:text-gold-300 hover:bg-neutral-900 border border-transparent hover:border-neutral-800 transition active:scale-95"
           >
             <Download className="w-4 h-4" />
           </button>
+          {/* Explicit Clear Collapse Control */}
           <button
             onClick={onClose}
-            title="Collapse Transcript"
-            className="p-1.5 rounded-lg text-silver-matte hover:text-gold-300 hover:bg-neutral-900 transition"
+            title="Collapse Transcript to Bottom Overlay"
+            className="flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-semibold text-silver-matte hover:text-gold-300 hover:bg-neutral-900 border border-neutral-800/90 transition active:scale-95"
           >
-            <X className="w-4 h-4" />
+            <Minimize2 className="w-3.5 h-3.5 text-gold-400" />
+            <span className="hidden sm:inline">Collapse</span>
           </button>
         </div>
       </div>
 
       {/* Language Selector Bar */}
-      <div className="px-4 py-2.5 bg-obsidian-900 border-b border-neutral-800 flex items-center justify-between">
+      <div className="px-4 py-2.5 bg-obsidian-900 border-b border-neutral-800/80 flex items-center justify-between">
         <div className="flex items-center space-x-1.5 text-xs text-silver-matte">
           <Globe className="w-3.5 h-3.5 text-gold-400" />
-          <span>My Language:</span>
+          <span className="font-medium">Translate to:</span>
         </div>
         <select
           value={selectedLanguage}
           onChange={(e) => onChangeLanguage(e.target.value)}
-          className="bg-black text-xs text-gold-300 font-semibold px-2 py-1 rounded-lg border border-neutral-800 outline-none cursor-pointer hover:border-gold-champagne/40"
+          className="bg-black text-xs text-gold-300 font-semibold px-2 py-1 rounded-lg border border-neutral-800 outline-none cursor-pointer hover:border-gold-champagne/40 transition"
         >
           {supportedLanguages.map((lang) => (
             <option key={lang.code} value={lang.code} className="bg-black text-silver-100">
@@ -98,27 +100,27 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       </div>
 
       {/* Search Input */}
-      <div className="p-3 border-b border-neutral-800/80">
+      <div className="p-3 border-b border-neutral-800/80 bg-obsidian-900/60">
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-neutral-600" />
+          <Search className="w-4 h-4 absolute left-3 top-2.5 text-neutral-500" />
           <input
             type="text"
             placeholder="Search transcript..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-obsidian-900 text-xs text-silver-200 pl-9 pr-3 py-2 rounded-lg border border-neutral-800 focus:outline-none focus:border-gold-champagne/50 focus:ring-1 focus:ring-gold-champagne/30 transition placeholder:text-neutral-600"
+            className="w-full bg-black text-xs text-silver-100 pl-9 pr-3 py-2 rounded-lg border border-neutral-800 focus:outline-none focus:border-gold-champagne/50 transition placeholder:text-neutral-600"
           />
         </div>
       </div>
 
-      {/* Transcript Scroll Area */}
+      {/* Continuous Speaker-Attributed Captions Stream */}
       <div
         ref={scrollContainerRef}
-        className="flex-1 p-4 overflow-y-auto space-y-3.5 scroll-smooth"
+        className="flex-1 p-4 overflow-y-auto space-y-3 scroll-smooth"
       >
         {filteredCaptions.length === 0 ? (
-          <div className="text-center py-16 text-neutral-600 text-xs">
-            {searchQuery ? 'No matching transcript lines found.' : 'Captions will appear here continuously as participants speak.'}
+          <div className="text-center py-20 text-neutral-500 text-xs sm:text-sm px-4">
+            {searchQuery ? 'No matching transcript lines found.' : 'Continuous live captions will appear here with speaker attribution as participants speak.'}
           </div>
         ) : (
           filteredCaptions.map((item) => {
@@ -130,14 +132,20 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
             const displayText = item.translations[selectedLanguage] || item.original_text;
 
             return (
-              <div key={item.id} className="group flex flex-col space-y-1">
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="font-semibold text-gold-300 tracking-wide">
-                    {item.speaker_name}
+              <div
+                key={item.id}
+                className="group flex flex-col space-y-1.5 p-3 rounded-xl bg-obsidian-900 border border-neutral-850 hover:border-neutral-750 transition duration-150"
+              >
+                <div className="flex items-center justify-between text-xs">
+                  {/* Speaker Attribution */}
+                  <span className="font-bold text-gold-300 tracking-wide flex items-center space-x-1.5 bg-red-950/50 px-2 py-0.5 rounded border border-gold-champagne/30 text-[11px] sm:text-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold-400" />
+                    <span>{item.speaker_name}</span>
                   </span>
                   <span className="text-neutral-500 font-mono text-[10px]">{timeStr}</span>
                 </div>
-                <div className="text-xs sm:text-sm text-silver-200 font-normal leading-relaxed bg-obsidian-900 p-2.5 rounded-xl border border-neutral-800/90 shadow-inner">
+                {/* Readable Multilingual Text */}
+                <div className="text-xs sm:text-sm text-silver-100 font-normal leading-relaxed pl-1">
                   {displayText}
                 </div>
               </div>
@@ -149,7 +157,7 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       {/* Footer Info */}
       <div className="p-3 bg-obsidian-900 border-t border-neutral-800 text-[11px] text-silver-matte flex items-center justify-between">
         <span>{captions.length} total captions</span>
-        <span className="text-gold-400 font-mono text-[10px]">Auto-translated</span>
+        <span className="text-gold-400 font-mono text-[10px]">Real-Time Multilingual</span>
       </div>
     </div>
   );

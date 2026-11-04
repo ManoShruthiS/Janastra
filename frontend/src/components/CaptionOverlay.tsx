@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Maximize2 } from 'lucide-react';
+import { Maximize2, Sparkles } from 'lucide-react';
 import { CaptionItem } from '../types/meeting';
 
 interface CaptionOverlayProps {
@@ -17,7 +17,7 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Take the last 3 captions for the continuous bottom overlay
+  // Take the last 3 captions for the continuous compact bottom overlay
   const recentCaptions = captions.slice(-3);
 
   useEffect(() => {
@@ -31,21 +31,22 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
   }
 
   return (
-    <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-11/12 max-w-3xl z-20 pointer-events-auto">
-      <div className="relative group bg-black/95 backdrop-blur-xl rounded-2xl border border-neutral-800 p-4 shadow-2xl transition-all duration-200 hover:border-gold-champagne/40">
-        {/* Expand to full transcript panel button */}
+    <div className="absolute bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 w-[94%] max-w-3xl z-20 pointer-events-auto">
+      <div className="relative group bg-obsidian-950/95 backdrop-blur-2xl rounded-2xl border border-neutral-800 p-4 sm:p-5 shadow-2xl transition-all duration-200 hover:border-neutral-700">
+        {/* Clear Expand Transcript Control */}
         <button
           onClick={onExpandTranscript}
-          title="Expand Full Meeting Transcript"
-          className="absolute -top-3 right-4 flex items-center space-x-1.5 px-3 py-1 rounded-full bg-obsidian-900 hover:bg-obsidian-800 text-gold-300 text-[11px] font-semibold border border-gold-champagne/40 shadow-gold-glow transition-transform hover:scale-105 active:scale-95 uppercase tracking-wider"
+          title="Expand to Full Continuous Transcript Panel"
+          className="absolute -top-3.5 right-4 flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-obsidian-900 hover:bg-neutral-850 text-gold-300 hover:text-gold-200 text-[11px] font-semibold border border-gold-champagne/40 hover:border-gold-champagne/80 transition-all duration-150 active:scale-95 shadow-lg tracking-wider"
         >
           <Maximize2 className="w-3 h-3 text-gold-400" />
-          <span>Full Transcript</span>
+          <span>Expand Transcript</span>
         </button>
 
+        {/* Live Captions Stream (Primary Visual Priority) */}
         <div
           ref={containerRef}
-          className="max-h-36 overflow-y-auto space-y-2.5 pr-2 scroll-smooth"
+          className="max-h-40 overflow-y-auto space-y-3 pr-2 scroll-smooth"
         >
           {recentCaptions.map((item) => {
             const displayText = item.translations[selectedLanguage] || item.original_text;
@@ -53,12 +54,15 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
             return (
               <div
                 key={item.id}
-                className="flex items-start space-x-2.5 text-sm sm:text-base leading-relaxed"
+                className="flex items-start space-x-3 text-base sm:text-lg leading-relaxed animate-fadeIn"
               >
-                <span className="font-bold text-gold-300 shrink-0 select-none bg-obsidian-850 px-2 py-0.5 rounded border border-gold-champagne/30 text-xs sm:text-sm tracking-wide">
-                  {item.speaker_name}:
+                {/* Speaker Attribution Badge */}
+                <span className="font-bold text-gold-300 shrink-0 select-none bg-red-950/70 px-2.5 py-0.5 rounded-lg border border-gold-champagne/40 text-xs sm:text-sm tracking-wide shadow-sm">
+                  {item.speaker_name}
                 </span>
-                <span className="text-silver-200 font-medium break-words">
+
+                {/* Multilingual Caption Text */}
+                <span className="text-silver-100 font-medium break-words">
                   {displayText}
                 </span>
               </div>
@@ -66,9 +70,9 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
           })}
 
           {activeSpeakerName && recentCaptions.length === 0 && (
-            <div className="flex items-center space-x-2 text-silver-matte text-sm italic">
-              <span className="w-2 h-2 rounded-full bg-gold-400 animate-ping" />
-              <span className="text-gold-300">{activeSpeakerName} is speaking...</span>
+            <div className="flex items-center space-x-2 text-silver-300 text-sm italic py-1">
+              <Sparkles className="w-3.5 h-3.5 text-gold-400 animate-pulse" />
+              <span className="text-gold-200 font-medium">{activeSpeakerName} is speaking...</span>
             </div>
           )}
         </div>

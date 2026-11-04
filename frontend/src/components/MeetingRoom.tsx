@@ -11,8 +11,7 @@ import { useWebRTC } from '../hooks/useWebRTC';
 import { useAudioStreamer } from '../hooks/useAudioStreamer';
 import { SupportedLanguage } from '../types/meeting';
 import { getApiBaseUrl } from '../config';
-import { Copy, Check, Subtitles } from 'lucide-react';
-import { HandGesture } from './HandGesture';
+import { Copy, Check } from 'lucide-react';
 
 interface MeetingRoomProps {
   meetingCode: string;
@@ -40,13 +39,21 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
 
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [copiedCode, setCopiedCode] = useState(false);
-  const [handRaised, setHandRaised] = useState(false);
+  const [gnaniConfigured, setGnaniConfigured] = useState<boolean | null>(null);
 
   useEffect(() => {
     fetch(`${getApiBaseUrl()}/api/languages`)
       .then((res) => res.json())
       .then((data) => setSupportedLanguages(data))
       .catch((err) => console.warn('Could not load languages list:', err));
+
+    fetch(`${getApiBaseUrl()}/api/health`)
+      .then((res) => res.json())
+      .then((data) => setGnaniConfigured(Boolean(data.gnani_configured)))
+      .catch((err) => {
+        console.warn('Could not load Gnani health state:', err);
+        setGnaniConfigured(false);
+      });
   }, []);
 
   const signalHandlerRef = React.useRef<(senderId: string, signalData: any) => void>(() => {});
@@ -139,11 +146,14 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
   return (
     <div className="flex flex-col h-screen w-screen bg-black text-silver-matte overflow-hidden select-none">
       {/* Top Header Bar */}
-      <header className="h-14 px-6 border-b border-neutral-800/90 bg-black flex items-center justify-between z-20 shrink-0">
+      <header className="h-14 px-4 sm:px-6 border-b border-neutral-800/90 bg-black flex items-center justify-between z-20 shrink-0">
         <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-gold-400 shadow-gold-glow" />
-            <h1 className="text-base font-black tracking-wider text-tiranga-metallic">
+          {/* Consistent Gold & Burgundy JANASTRA Branding */}
+          <div className="flex items-center space-x-2.5">
+            <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-red-950 via-rose-950 to-black border border-gold-champagne/40 flex items-center justify-center shadow-inner">
+              <span className="w-2 h-2 rounded-full bg-gold-400" />
+            </div>
+            <h1 className="text-base font-black tracking-widest text-gold-burgundy">
               JANASTRA
             </h1>
           </div>
@@ -154,43 +164,28 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
           <button
             onClick={handleCopyMeetingCode}
             title="Click to copy meeting code"
-            className="flex items-center space-x-2 bg-obsidian-900 hover:bg-neutral-900 px-3 py-1 rounded-xl border border-neutral-800 text-xs font-mono text-silver-100 transition shadow-inner"
+            className="flex items-center space-x-2 bg-obsidian-900 hover:bg-neutral-900 px-3 py-1.5 rounded-xl border border-neutral-800 hover:border-neutral-700 text-xs font-mono text-silver-100 transition duration-150 active:scale-95 shadow-inner"
           >
             <span>{meetingCode}</span>
             {copiedCode ? (
-              <Check className="w-3.5 h-3.5 text-silver-200" />
+              <Check className="w-3.5 h-3.5 text-emerald-400" />
             ) : (
               <Copy className="w-3.5 h-3.5 text-silver-matte" />
             )}
           </button>
-
-          {/* Hand Raise / Gesture Interaction */}
-          <button
-            onClick={() => setHandRaised((prev) => !prev)}
-            title={handRaised ? 'Lower Hand' : 'Raise Hand / Wave'}
-            className={`flex items-center space-x-1.5 px-3 py-1 rounded-xl border text-xs font-mono transition shadow-inner ${
-              handRaised
-                ? 'bg-obsidian-800 border-silver-400 text-silver-100 shadow-silver-glow'
-                : 'bg-obsidian-900 hover:bg-neutral-900 border-neutral-800 text-silver-matte hover:text-silver-100'
-            }`}
-          >
-            <HandGesture size={18} />
-            <span>{handRaised ? 'HAND RAISED' : 'WAVE'}</span>
-          </button>
         </div>
 
-        {/* Right Info: Current caption language & status */}
+        {/* Right Info: Online participant status */}
         <div className="flex items-center space-x-3 text-xs">
-          {captionsEnabled && (
-            <div className="flex items-center space-x-1.5 bg-obsidian-900 border border-gold-champagne/40 px-3 py-1 rounded-xl text-gold-300 shadow-gold-glow">
-              <Subtitles className="w-3.5 h-3.5 text-gold-400" />
-              <span className="font-mono tracking-wider">CC: {selectedLanguage.toUpperCase()}</span>
-            </div>
-          )}
-
-          <div className="flex items-center space-x-2 bg-obsidian-900 px-3 py-1 rounded-xl border border-neutral-800 text-silver-matte">
-            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-gold-400' : 'bg-neutral-600'}`} />
-            <span className="font-mono text-[11px]">{isConnected ? 'ONLINE' : 'CONNECTING...'}</span>
+          <div className="flex items-center space-x-2 bg-obsidian-900 px-3 py-1.5 rounded-xl border border-neutral-800 text-silver-matte shadow-inner">
+            <span
+              className={`w-2 h-2 rounded-full ${
+                isConnected ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.4)]' : 'bg-neutral-600'
+              }`}
+            />
+            <span className="font-mono text-[11px] tracking-wider text-silver-200">
+              {isConnected ? 'ONLINE' : 'CONNECTING...'}
+            </span>
           </div>
         </div>
       </header>
@@ -265,6 +260,7 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
         supportedLanguages={supportedLanguages}
         participantCount={participants.length}
         unreadChatCount={unreadChatCount}
+        gnaniConfigured={gnaniConfigured}
         onToggleMic={toggleMic}
         onToggleCam={toggleCam}
         onToggleScreenShare={toggleScreenShare}

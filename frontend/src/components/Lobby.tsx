@@ -3,7 +3,6 @@ import { Video, Plus, LogIn } from 'lucide-react';
 import { getApiBaseUrl } from '../config';
 import { CursorRingField } from './originkit/cursor-ring-field';
 import { ScrambleText } from './ScrambleText';
-import { HandGesture } from './HandGesture';
 import { MagneticButton } from './MagneticButton';
 
 interface LobbyProps {
@@ -114,10 +113,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
       <div className="w-full max-w-[490px] relative z-10 flex flex-col items-center my-auto">
         {/* Brand Heading & Tagline */}
         <div className="text-center mb-10 flex flex-col items-center">
-          <div className="mb-3 flex items-center justify-center p-2 rounded-2xl bg-obsidian-900/60 border border-neutral-800/80 shadow-silver-glow">
-            <HandGesture size={32} />
-          </div>
-          <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-tiranga-metallic">
+          <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-gold-burgundy">
             JANASTRA
           </h1>
           <p className="text-silver-300 font-light text-base sm:text-lg tracking-wide mt-3 min-h-[1.75rem] inline-flex items-center justify-center">
