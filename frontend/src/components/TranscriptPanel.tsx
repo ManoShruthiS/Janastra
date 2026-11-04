@@ -57,14 +57,14 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       {/* Header */}
       <div className="p-4 border-b border-neutral-800/90 flex items-center justify-between bg-black">
         <div className="flex items-center space-x-2">
-          <Subtitles className="w-5 h-5 text-gold-400" />
-          <h2 className="font-bold text-gold-300 text-sm sm:text-base tracking-wide">Live Multilingual Transcript</h2>
+          <Subtitles className="w-5 h-5 text-silver-200" />
+          <h2 className="font-bold text-white text-sm sm:text-base tracking-wide">Live Multilingual Transcript</h2>
         </div>
         <div className="flex items-center space-x-1.5">
           <button
             onClick={handleExport}
             title="Download Transcript as Text File"
-            className="p-1.5 rounded-lg text-silver-matte hover:text-gold-300 hover:bg-neutral-900 border border-transparent hover:border-neutral-800 transition active:scale-95"
+            className="p-1.5 rounded-lg text-silver-matte hover:text-white hover:bg-neutral-900 border border-transparent hover:border-neutral-800 transition active:scale-95"
           >
             <Download className="w-4 h-4" />
           </button>
@@ -72,9 +72,9 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
           <button
             onClick={onClose}
             title="Collapse Transcript to Bottom Overlay"
-            className="flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-semibold text-silver-matte hover:text-gold-300 hover:bg-neutral-900 border border-neutral-800/90 transition active:scale-95"
+            className="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-silver-matte hover:text-white hover:bg-neutral-900 border border-neutral-800/90 transition active:scale-95"
           >
-            <Minimize2 className="w-3.5 h-3.5 text-gold-400" />
+            <Minimize2 className="w-3.5 h-3.5 text-silver-300" />
             <span className="hidden sm:inline">Collapse</span>
           </button>
         </div>
@@ -83,13 +83,13 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       {/* Language Selector Bar */}
       <div className="px-4 py-2.5 bg-obsidian-900 border-b border-neutral-800/80 flex items-center justify-between">
         <div className="flex items-center space-x-1.5 text-xs text-silver-matte">
-          <Globe className="w-3.5 h-3.5 text-gold-400" />
+          <Globe className="w-3.5 h-3.5 text-silver-300" />
           <span className="font-medium">Translate to:</span>
         </div>
         <select
           value={selectedLanguage}
           onChange={(e) => onChangeLanguage(e.target.value)}
-          className="bg-black text-xs text-gold-300 font-semibold px-2 py-1 rounded-lg border border-neutral-800 outline-none cursor-pointer hover:border-gold-champagne/40 transition"
+          className="bg-black text-xs text-silver-100 font-semibold px-2 py-1 rounded-lg border border-neutral-800 outline-none cursor-pointer hover:border-neutral-700 transition"
         >
           {supportedLanguages.map((lang) => (
             <option key={lang.code} value={lang.code} className="bg-black text-silver-100">
@@ -108,7 +108,7 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
             placeholder="Search transcript..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-black text-xs text-silver-100 pl-9 pr-3 py-2 rounded-lg border border-neutral-800 focus:outline-none focus:border-gold-champagne/50 transition placeholder:text-neutral-600"
+            className="w-full bg-black text-xs text-silver-100 pl-9 pr-3 py-2 rounded-lg border border-neutral-800 focus:outline-none focus:border-neutral-600 transition placeholder:text-neutral-600"
           />
         </div>
       </div>
@@ -138,8 +138,8 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
               >
                 <div className="flex items-center justify-between text-xs">
                   {/* Speaker Attribution */}
-                  <span className="font-bold text-gold-300 tracking-wide flex items-center space-x-1.5 bg-red-950/50 px-2 py-0.5 rounded border border-gold-champagne/30 text-[11px] sm:text-xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-gold-400" />
+                  <span className="font-bold text-white tracking-wide flex items-center space-x-1.5 bg-neutral-900 px-2 py-0.5 rounded border border-neutral-700 text-[11px] sm:text-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-silver-200" />
                     <span>{item.speaker_name}</span>
                   </span>
                   <span className="text-neutral-500 font-mono text-[10px]">{timeStr}</span>
@@ -157,7 +157,7 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       {/* Footer Info */}
       <div className="p-3 bg-obsidian-900 border-t border-neutral-800 text-[11px] text-silver-matte flex items-center justify-between">
         <span>{captions.length} total captions</span>
-        <span className="text-gold-400 font-mono text-[10px]">Real-Time Multilingual</span>
+        <span className="text-silver-matte font-mono text-[10px]">Real-Time Multilingual</span>
       </div>
     </div>
   );

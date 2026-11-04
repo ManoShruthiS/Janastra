@@ -37,13 +37,13 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
         <button
           onClick={onExpandTranscript}
           title="Expand to Full Continuous Transcript Panel"
-          className="absolute -top-3.5 right-4 flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-obsidian-900 hover:bg-neutral-850 text-gold-300 hover:text-gold-200 text-[11px] font-semibold border border-gold-champagne/40 hover:border-gold-champagne/80 transition-all duration-150 active:scale-95 shadow-lg tracking-wider"
+          className="absolute -top-3.5 right-4 flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-obsidian-900 hover:bg-neutral-850 text-silver-200 hover:text-white text-[11px] font-semibold border border-neutral-700 hover:border-neutral-500 transition-all duration-150 active:scale-95 shadow-lg tracking-wider"
         >
-          <Maximize2 className="w-3 h-3 text-gold-400" />
+          <Maximize2 className="w-3 h-3 text-silver-300" />
           <span>Expand Transcript</span>
         </button>
 
-        {/* Live Captions Stream (Primary Visual Priority) */}
+        {/* Live Captions Stream (Dark Black & Pure White/Silver Theme) */}
         <div
           ref={containerRef}
           className="max-h-40 overflow-y-auto space-y-3 pr-2 scroll-smooth"
@@ -57,7 +57,7 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
                 className="flex items-start space-x-3 text-base sm:text-lg leading-relaxed animate-fadeIn"
               >
                 {/* Speaker Attribution Badge */}
-                <span className="font-bold text-gold-300 shrink-0 select-none bg-red-950/70 px-2.5 py-0.5 rounded-lg border border-gold-champagne/40 text-xs sm:text-sm tracking-wide shadow-sm">
+                <span className="font-bold text-white shrink-0 select-none bg-neutral-900 px-2.5 py-0.5 rounded-lg border border-neutral-700 text-xs sm:text-sm tracking-wide shadow-sm">
                   {item.speaker_name}
                 </span>
 
@@ -70,9 +70,9 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
           })}
 
           {activeSpeakerName && recentCaptions.length === 0 && (
-            <div className="flex items-center space-x-2 text-silver-300 text-sm italic py-1">
-              <Sparkles className="w-3.5 h-3.5 text-gold-400 animate-pulse" />
-              <span className="text-gold-200 font-medium">{activeSpeakerName} is speaking...</span>
+            <div className="flex items-center space-x-2 text-silver-matte text-sm italic py-1">
+              <Sparkles className="w-3.5 h-3.5 text-silver-400 animate-pulse" />
+              <span className="text-silver-200 font-medium">{activeSpeakerName} is speaking...</span>
             </div>
           )}
         </div>

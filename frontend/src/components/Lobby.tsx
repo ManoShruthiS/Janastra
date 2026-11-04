@@ -94,12 +94,12 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
 
   return (
     <div className="min-h-screen bg-black text-silver-matte flex flex-col justify-between items-center px-4 py-8 relative overflow-hidden select-none">
-      {/* Subtle Dark Burgundy Radial Glow behind central content */}
+      {/* Subtle Monochrome Silver/Graphite Radial Depth behind central content */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[720px] rounded-full pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(74, 6, 26, 0.38) 0%, rgba(42, 2, 14, 0.18) 45%, rgba(0, 0, 0, 0) 75%)',
-          filter: 'blur(40px)'
+          background: 'radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, rgba(30, 30, 35, 0.2) 45%, rgba(0, 0, 0, 0) 75%)',
+          filter: 'blur(50px)'
         }}
       />
 

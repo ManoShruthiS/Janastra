@@ -35,7 +35,7 @@ const VideoTile: React.FC<VideoTileProps> = ({
     <div
       className={`relative w-full h-full min-h-[160px] sm:min-h-[190px] max-h-[48vh] rounded-2xl overflow-hidden bg-obsidian-950 transition-all duration-300 flex items-center justify-center shadow-xl ${
         isSpeaking
-          ? 'border border-gold-champagne/80 ring-1 ring-gold-champagne/40'
+          ? 'border border-silver-400 ring-1 ring-silver-400/40'
           : 'border border-neutral-850 hover:border-neutral-800'
       }`}
     >
@@ -52,7 +52,7 @@ const VideoTile: React.FC<VideoTileProps> = ({
         />
       ) : (
         <div className="flex flex-col items-center justify-center space-y-2.5">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-obsidian-900 border border-gold-champagne/40 flex items-center justify-center text-lg sm:text-xl font-bold text-gold-300 uppercase shadow-sm">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-obsidian-900 border border-neutral-700 flex items-center justify-center text-lg sm:text-xl font-bold text-white uppercase shadow-sm">
             {displayName.charAt(0) || 'U'}
           </div>
           <span className="text-silver-matte text-[11px] sm:text-xs flex items-center space-x-1.5 font-mono">
@@ -65,11 +65,11 @@ const VideoTile: React.FC<VideoTileProps> = ({
       {/* Participant Badge & Status */}
       <div className="absolute bottom-3 left-3 flex items-center space-x-2 bg-black/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-neutral-800/90 shadow-md">
         <span className="text-xs font-semibold text-silver-200 flex items-center space-x-1.5">
-          <span className="text-gold-200 tracking-wide">{displayName}</span>
+          <span className="text-white tracking-wide">{displayName}</span>
           {isMe && <span className="text-[10px] text-silver-matte font-normal">(You)</span>}
           {isHost && (
             <span title="Meeting Host">
-              <Crown className="w-3.5 h-3.5 text-gold-400" />
+              <Crown className="w-3.5 h-3.5 text-silver-300" />
             </span>
           )}
         </span>
@@ -79,15 +79,15 @@ const VideoTile: React.FC<VideoTileProps> = ({
           {isMuted ? (
             <MicOff className="w-3.5 h-3.5 text-silver-matte" />
           ) : (
-            <Mic className="w-3.5 h-3.5 text-gold-400" />
+            <Mic className="w-3.5 h-3.5 text-white" />
           )}
         </span>
       </div>
 
       {/* Active speaker tag */}
       {isSpeaking && (
-        <div className="absolute top-3 right-3 flex items-center space-x-1.5 bg-obsidian-900 border border-gold-champagne text-gold-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-gold-glow uppercase tracking-widest">
-          <span className="w-1.5 h-1.5 rounded-full bg-gold-400 animate-ping" />
+        <div className="absolute top-3 right-3 flex items-center space-x-1.5 bg-obsidian-900 border border-neutral-700 text-silver-100 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-widest">
+          <span className="w-1.5 h-1.5 rounded-full bg-silver-200 animate-pulse" />
           <span>Speaking</span>
         </div>
       )}

@@ -68,11 +68,11 @@ export const ControlBar: React.FC<ControlBarProps> = ({
             title={captionsEnabled ? 'Turn Captions Off' : 'Turn Captions On'}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wider transition-all duration-150 active:scale-95 ${
               captionsEnabled
-                ? 'bg-obsidian-800 text-gold-300 border border-gold-champagne/40 shadow-sm'
-                : 'text-silver-matte hover:text-silver-100 hover:bg-neutral-900'
+                ? 'bg-obsidian-800 text-white border border-neutral-600 shadow-sm'
+                : 'text-silver-matte hover:text-white hover:bg-neutral-900'
             }`}
           >
-            <Subtitles className={`w-4 h-4 ${captionsEnabled ? 'text-gold-400' : 'text-silver-matte'}`} />
+            <Subtitles className={`w-4 h-4 ${captionsEnabled ? 'text-white' : 'text-silver-matte'}`} />
             <span>{captionsEnabled ? 'CC ON' : 'CC OFF'}</span>
           </button>
 
@@ -81,7 +81,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
               value={selectedLanguage}
               onChange={(e) => onChangeLanguage(e.target.value)}
               title="Select your personal caption language"
-              className="bg-transparent text-xs text-gold-300 font-medium px-2 py-1 outline-none cursor-pointer border-l border-neutral-800 hover:text-gold-200 transition"
+              className="bg-transparent text-xs text-silver-100 font-medium px-2 py-1 outline-none cursor-pointer border-l border-neutral-800 hover:text-white transition"
             >
               {supportedLanguages.map((lang) => (
                 <option key={lang.code} value={lang.code} className="bg-black text-silver-100">
@@ -93,7 +93,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
         </div>
       </div>
 
-      {/* Center: The EXACT 8 Meeting Controls with Improved Spacing & Alignment */}
+      {/* Center: The EXACT 8 Meeting Controls (Dark Black, White, & Silver Theme) */}
       <div className="flex items-center justify-center space-x-2 sm:space-x-3 flex-shrink-0">
         {/* 1. Microphone */}
         <button
@@ -101,11 +101,11 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           title={isMuted ? 'Unmute Microphone' : 'Mute Microphone'}
           className={`relative w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-150 active:scale-95 ${
             isMuted
-              ? 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-neutral-700 hover:text-silver-100'
-              : 'bg-obsidian-850 text-gold-300 border border-gold-champagne/50 shadow-sm hover:border-gold-champagne'
+              ? 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-neutral-700 hover:text-white'
+              : 'bg-obsidian-800 text-white border border-neutral-600 shadow-sm hover:border-neutral-500'
           }`}
         >
-          {isMuted ? <MicOff className="w-5 h-5 text-silver-matte" /> : <Mic className="w-5 h-5 text-gold-400" />}
+          {isMuted ? <MicOff className="w-5 h-5 text-silver-matte" /> : <Mic className="w-5 h-5 text-white" />}
         </button>
 
         {/* 2. Camera */}
@@ -114,11 +114,11 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           title={isVideoOff ? 'Turn Camera On' : 'Turn Camera Off'}
           className={`relative w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-150 active:scale-95 ${
             isVideoOff
-              ? 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-neutral-700 hover:text-silver-100'
-              : 'bg-obsidian-850 text-gold-300 border border-gold-champagne/50 shadow-sm hover:border-gold-champagne'
+              ? 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-neutral-700 hover:text-white'
+              : 'bg-obsidian-800 text-white border border-neutral-600 shadow-sm hover:border-neutral-500'
           }`}
         >
-          {isVideoOff ? <VideoOff className="w-5 h-5 text-silver-matte" /> : <Video className="w-5 h-5 text-gold-400" />}
+          {isVideoOff ? <VideoOff className="w-5 h-5 text-silver-matte" /> : <Video className="w-5 h-5 text-white" />}
         </button>
 
         {/* 3. Screen Sharing */}
@@ -127,8 +127,8 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           title={isScreenSharing ? 'Stop Screen Sharing' : 'Share Screen'}
           className={`relative w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-150 active:scale-95 ${
             isScreenSharing
-              ? 'bg-obsidian-800 text-gold-300 border border-gold-champagne shadow-sm'
-              : 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-gold-champagne/40 hover:text-gold-300'
+              ? 'bg-obsidian-800 text-white border border-neutral-500 shadow-sm'
+              : 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-neutral-700 hover:text-white'
           }`}
         >
           <ScreenShare className="w-5 h-5" />
@@ -140,13 +140,13 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           title="Meeting Chat"
           className={`relative w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-150 active:scale-95 ${
             isChatOpen
-              ? 'bg-obsidian-800 text-gold-300 border border-gold-champagne/60 shadow-sm'
-              : 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-gold-champagne/40 hover:text-gold-300'
+              ? 'bg-obsidian-800 text-white border border-neutral-600 shadow-sm'
+              : 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-neutral-700 hover:text-white'
           }`}
         >
           <MessageSquare className="w-5 h-5" />
           {unreadChatCount > 0 && !isChatOpen && (
-            <span className="absolute -top-1 -right-1 bg-gold-champagne text-black text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center shadow-md">
+            <span className="absolute -top-1 -right-1 bg-white text-black text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center shadow-md">
               {unreadChatCount > 9 ? '9+' : unreadChatCount}
             </span>
           )}
@@ -158,12 +158,12 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           title="Participants List"
           className={`relative w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-150 active:scale-95 ${
             isParticipantsOpen
-              ? 'bg-obsidian-800 text-gold-300 border border-gold-champagne/60 shadow-sm'
-              : 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-gold-champagne/40 hover:text-gold-300'
+              ? 'bg-obsidian-800 text-white border border-neutral-600 shadow-sm'
+              : 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-neutral-700 hover:text-white'
           }`}
         >
           <Users className="w-5 h-5" />
-          <span className="absolute -top-1 -right-1 bg-obsidian-850 text-gold-300 text-[10px] font-bold rounded-full px-1.5 py-0.5 border border-gold-champagne/30">
+          <span className="absolute -top-1 -right-1 bg-neutral-800 text-silver-100 text-[10px] font-bold rounded-full px-1.5 py-0.5 border border-neutral-700">
             {participantCount}
           </span>
         </button>
@@ -174,8 +174,8 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           title="Toggle Captions"
           className={`relative w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-150 active:scale-95 ${
             captionsEnabled
-              ? 'bg-obsidian-800 text-gold-300 border border-gold-champagne shadow-sm'
-              : 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-gold-champagne/40 hover:text-gold-300'
+              ? 'bg-obsidian-800 text-white border border-neutral-600 shadow-sm'
+              : 'bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-neutral-700 hover:text-white'
           }`}
         >
           <Subtitles className="w-5 h-5" />
@@ -185,7 +185,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
         <button
           onClick={onOpenSettings}
           title="Settings"
-          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-gold-champagne/40 hover:text-gold-300 transition-all duration-150 active:scale-95"
+          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-obsidian-900 text-silver-matte border border-neutral-800 hover:border-neutral-700 hover:text-white transition-all duration-150 active:scale-95"
         >
           <Settings className="w-5 h-5" />
         </button>
@@ -194,14 +194,14 @@ export const ControlBar: React.FC<ControlBarProps> = ({
         <button
           onClick={onLeaveMeeting}
           title="Leave Meeting"
-          className="h-11 sm:h-12 px-4 sm:px-5 rounded-full bg-red-950/70 hover:bg-red-900 text-rose-200 border border-red-800/80 hover:border-rose-500/80 transition-all duration-150 active:scale-95 flex items-center space-x-2 shadow-sm"
+          className="h-11 sm:h-12 px-4 sm:px-5 rounded-full bg-neutral-900 hover:bg-neutral-850 text-white border border-neutral-700 hover:border-neutral-500 transition-all duration-150 active:scale-95 flex items-center space-x-2 shadow-sm"
         >
-          <PhoneOff className="w-4 h-4 sm:w-5 sm:h-5 text-rose-300" />
-          <span className="text-xs font-bold uppercase tracking-wider text-rose-200">Leave</span>
+          <PhoneOff className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-300" />
+          <span className="text-xs font-bold uppercase tracking-wider text-white">Leave</span>
         </button>
       </div>
 
-      {/* Right side: Real Gnani STT Status (never fake active) */}
+      {/* Right side: Real Gnani STT Status (Silver/Monochrome) */}
       <div className="hidden md:flex items-center space-x-3 text-xs flex-1 justify-end">
         <span
           title={
@@ -216,13 +216,13 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           <span
             className={`w-2 h-2 rounded-full ${
               gnaniConfigured === true
-                ? 'bg-emerald-400'
+                ? 'bg-silver-100'
                 : gnaniConfigured === false
                 ? 'bg-neutral-600'
-                : 'bg-amber-500/60 animate-pulse'
+                : 'bg-neutral-500 animate-pulse'
             }`}
           />
-          <span className="font-mono text-[11px] tracking-wide text-silver-300">
+          <span className="font-mono text-[11px] tracking-wide text-silver-matte">
             {gnaniConfigured === true
               ? 'Gnani Prisma: Active'
               : gnaniConfigured === false

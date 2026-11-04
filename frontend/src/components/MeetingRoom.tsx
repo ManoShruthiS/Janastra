@@ -149,12 +149,9 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
       <header className="h-14 px-4 sm:px-6 border-b border-neutral-800/90 bg-black flex items-center justify-between z-20 shrink-0">
         <div className="flex items-center space-x-3">
           {/* Indian Tricolor JANASTRA Brand */}
-          <div className="flex items-center space-x-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-gold-400" />
-            <h1 className="text-base font-black tracking-widest text-tiranga-metallic">
-              JANASTRA
-            </h1>
-          </div>
+          <h1 className="text-base font-black tracking-widest text-tiranga-metallic">
+            JANASTRA
+          </h1>
 
           <div className="h-4 w-px bg-neutral-800 mx-2" />
 
@@ -166,25 +163,11 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
           >
             <span>{meetingCode}</span>
             {copiedCode ? (
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <Check className="w-3.5 h-3.5 text-silver-100" />
             ) : (
               <Copy className="w-3.5 h-3.5 text-silver-matte" />
             )}
           </button>
-        </div>
-
-        {/* Right Info: Online participant status */}
-        <div className="flex items-center space-x-3 text-xs">
-          <div className="flex items-center space-x-2 bg-obsidian-900 px-3 py-1.5 rounded-xl border border-neutral-800 text-silver-matte shadow-inner">
-            <span
-              className={`w-2 h-2 rounded-full ${
-                isConnected ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.4)]' : 'bg-neutral-600'
-              }`}
-            />
-            <span className="font-mono text-[11px] tracking-wider text-silver-200">
-              {isConnected ? 'ONLINE' : 'CONNECTING...'}
-            </span>
-          </div>
         </div>
       </header>
 
