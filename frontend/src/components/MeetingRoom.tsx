@@ -148,12 +148,10 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
       {/* Top Header Bar */}
       <header className="h-14 px-4 sm:px-6 border-b border-neutral-800/90 bg-black flex items-center justify-between z-20 shrink-0">
         <div className="flex items-center space-x-3">
-          {/* Consistent Gold & Burgundy JANASTRA Branding */}
+          {/* Indian Tricolor JANASTRA Brand */}
           <div className="flex items-center space-x-2.5">
-            <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-red-950 via-rose-950 to-black border border-gold-champagne/40 flex items-center justify-center shadow-inner">
-              <span className="w-2 h-2 rounded-full bg-gold-400" />
-            </div>
-            <h1 className="text-base font-black tracking-widest text-gold-burgundy">
+            <span className="w-2.5 h-2.5 rounded-full bg-gold-400" />
+            <h1 className="text-base font-black tracking-widest text-tiranga-metallic">
               JANASTRA
             </h1>
           </div>

@@ -113,7 +113,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
       <div className="w-full max-w-[490px] relative z-10 flex flex-col items-center my-auto">
         {/* Brand Heading & Tagline */}
         <div className="text-center mb-10 flex flex-col items-center">
-          <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-gold-burgundy">
+          <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-tiranga-metallic">
             JANASTRA
           </h1>
           <p className="text-silver-300 font-light text-base sm:text-lg tracking-wide mt-3 min-h-[1.75rem] inline-flex items-center justify-center">
