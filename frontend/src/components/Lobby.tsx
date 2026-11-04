@@ -4,6 +4,7 @@ import { getApiBaseUrl } from '../config';
 import { CursorRingField } from './originkit/cursor-ring-field';
 import { ScrambleText } from './ScrambleText';
 import { HandGesture } from './HandGesture';
+import { MagneticButton } from './MagneticButton';
 
 interface LobbyProps {
   onJoinMeeting: (meetingCode: string, displayName: string, isHost: boolean) => void;
@@ -130,30 +131,37 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
 
         {/* Refined Meeting Card */}
         <div className="w-full bg-obsidian-900/90 border border-neutral-800/90 rounded-3xl p-7 sm:p-8 shadow-2xl backdrop-blur-xl">
-          {/* Tabs */}
-          <div className="flex bg-black p-1 rounded-2xl mb-7 border border-neutral-800/80">
+          {/* Slide Toggle Tabs */}
+          <div className="relative flex bg-black p-1 rounded-2xl mb-7 border border-neutral-800/80">
+            {/* Sliding Pill Indicator */}
+            <div
+              className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-xl bg-obsidian-800 border border-neutral-700/80 transition-transform duration-300 ease-out pointer-events-none"
+              style={{
+                transform: activeTab === 'create' ? 'translateX(0)' : 'translateX(calc(100% + 4px))'
+              }}
+            />
             <button
               type="button"
               onClick={() => { setActiveTab('create'); setError(null); }}
-              className={`flex-1 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center space-x-2 ${
+              className={`relative z-10 flex-1 py-2.5 text-xs font-semibold rounded-xl transition-colors duration-200 flex items-center justify-center space-x-2 active:scale-95 ${
                 activeTab === 'create'
-                  ? 'bg-obsidian-800 text-silver-100 border border-neutral-700 shadow-silver-glow'
+                  ? 'text-silver-100 font-bold'
                   : 'text-silver-matte hover:text-silver-200'
               }`}
             >
-              <Plus className="w-4 h-4 text-silver-200" />
+              <Plus className="w-4 h-4 text-silver-200 transition-transform duration-200 group-hover:rotate-90" />
               <span>Host Meeting</span>
             </button>
             <button
               type="button"
               onClick={() => { setActiveTab('join'); setError(null); }}
-              className={`flex-1 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center space-x-2 ${
+              className={`relative z-10 flex-1 py-2.5 text-xs font-semibold rounded-xl transition-colors duration-200 flex items-center justify-center space-x-2 active:scale-95 ${
                 activeTab === 'join'
-                  ? 'bg-obsidian-800 text-silver-100 border border-neutral-700 shadow-silver-glow'
+                  ? 'text-silver-100 font-bold'
                   : 'text-silver-matte hover:text-silver-200'
               }`}
             >
-              <LogIn className="w-4 h-4 text-silver-200" />
+              <LogIn className="w-4 h-4 text-silver-200 transition-transform duration-200 group-hover:translate-x-0.5" />
               <span>Join Meeting</span>
             </button>
           </div>
@@ -180,14 +188,15 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
                 />
               </div>
 
-              <button
+              {/* Magnetic Button with Ripple Click, Scale Hover, and Icon Slide */}
+              <MagneticButton
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-4 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 hover:border-silver-400/60 disabled:opacity-50 text-silver-100 text-sm font-semibold border border-neutral-700 shadow-silver-glow transition-all flex items-center justify-center space-x-2 uppercase tracking-wider"
+                className="w-full py-4 rounded-xl bg-obsidian-800 hover:bg-neutral-850 hover:border-neutral-500 disabled:opacity-50 text-silver-100 text-sm font-semibold border border-neutral-700 transition-all uppercase tracking-wider"
               >
-                <Video className="w-4 h-4 text-silver-200" />
+                <Video className="w-4 h-4 text-silver-200 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6" />
                 <span>{isLoading ? 'Creating Room...' : 'Start New Meeting'}</span>
-              </button>
+              </MagneticButton>
             </form>
           ) : (
             <form onSubmit={handleJoinMeeting} className="space-y-5">
@@ -219,13 +228,14 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
                 />
               </div>
 
-              <button
+              {/* Magnetic Button with Ripple Click, Scale Hover, and Icon Reveal */}
+              <MagneticButton
                 type="submit"
-                className="w-full py-4 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 hover:border-silver-400/60 text-silver-100 text-sm font-semibold border border-neutral-700 shadow-silver-glow transition-all flex items-center justify-center space-x-2 uppercase tracking-wider"
+                className="w-full py-4 rounded-xl bg-obsidian-800 hover:bg-neutral-850 hover:border-neutral-500 text-silver-100 text-sm font-semibold border border-neutral-700 transition-all uppercase tracking-wider"
               >
-                <LogIn className="w-4 h-4 text-silver-200" />
+                <LogIn className="w-4 h-4 text-silver-200 transition-transform duration-200 group-hover:translate-x-1" />
                 <span>Enter Meeting</span>
-              </button>
+              </MagneticButton>
             </form>
           )}
         </div>

@@ -96,6 +96,22 @@
   animation: handWave 2s infinite;
 }
 
+/* Subtle Monochromatic Ripple */
+@keyframes monochromeRipple {
+  0% {
+    transform: scale(0);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.animate-monochrome-ripple {
+  animation: monochromeRipple 0.65s cubic-bezier(0.1, 0.7, 0.1, 1) forwards;
+}
+
 /* Sleek obsidian scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
