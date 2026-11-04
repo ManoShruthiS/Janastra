@@ -35,8 +35,8 @@ const VideoTile: React.FC<VideoTileProps> = ({
     <div
       className={`relative w-full h-full min-h-[160px] sm:min-h-[190px] max-h-[48vh] rounded-2xl overflow-hidden bg-obsidian-950 transition-all duration-300 flex items-center justify-center shadow-xl ${
         isSpeaking
-          ? 'border border-silver-400 ring-1 ring-silver-400/40'
-          : 'border border-neutral-850 hover:border-neutral-800'
+          ? 'border border-silver-300 ring-1 ring-silver-400/40'
+          : 'hairline-border-subtle hover:border-white/15'
       }`}
     >
       {/* Video Element */}
@@ -52,8 +52,18 @@ const VideoTile: React.FC<VideoTileProps> = ({
         />
       ) : (
         <div className="flex flex-col items-center justify-center space-y-2.5">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-obsidian-900 border border-neutral-700 flex items-center justify-center text-lg sm:text-xl font-bold text-white uppercase shadow-sm">
-            {displayName.charAt(0) || 'U'}
+          {/* Avatar with Concentric Voice Pulse when Speaking */}
+          <div className="relative flex items-center justify-center">
+            {isSpeaking && (
+              <div className="absolute -inset-1 rounded-full animate-voice-pulse pointer-events-none" />
+            )}
+            <div
+              className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-obsidian-900 flex items-center justify-center text-lg sm:text-xl font-bold text-white uppercase shadow-sm transition-all duration-200 ${
+                isSpeaking ? 'border-2 border-white' : 'border border-neutral-700'
+              }`}
+            >
+              {displayName.charAt(0) || 'U'}
+            </div>
           </div>
           <span className="text-silver-matte text-[11px] sm:text-xs flex items-center space-x-1.5 font-mono">
             <VideoOff className="w-3 h-3 text-silver-matte" />
@@ -62,8 +72,8 @@ const VideoTile: React.FC<VideoTileProps> = ({
         </div>
       )}
 
-      {/* Participant Badge & Status */}
-      <div className="absolute bottom-3 left-3 flex items-center space-x-2 bg-black/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-neutral-800/90 shadow-md">
+      {/* Participant Badge: Minimal Frosted Glass Pill */}
+      <div className="absolute bottom-3 left-3 flex items-center space-x-2 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 shadow-sm">
         <span className="text-xs font-semibold text-silver-200 flex items-center space-x-1.5">
           <span className="text-white tracking-wide">{displayName}</span>
           {isMe && <span className="text-[10px] text-silver-matte font-normal">(You)</span>}
@@ -84,10 +94,10 @@ const VideoTile: React.FC<VideoTileProps> = ({
         </span>
       </div>
 
-      {/* Active speaker tag */}
+      {/* Speaking Indicator: Minimalist Silver Dot Tag */}
       {isSpeaking && (
-        <div className="absolute top-3 right-3 flex items-center space-x-1.5 bg-obsidian-900 border border-neutral-700 text-silver-100 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-widest">
-          <span className="w-1.5 h-1.5 rounded-full bg-silver-200 animate-pulse" />
+        <div className="absolute top-3 right-3 flex items-center space-x-1.5 bg-black/75 backdrop-blur-md border border-white/15 text-silver-100 text-[10px] font-mono px-2 py-0.5 rounded-full shadow-sm">
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
           <span>Speaking</span>
         </div>
       )}

@@ -32,18 +32,18 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
 
   return (
     <div className="absolute bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 w-[94%] max-w-3xl z-20 pointer-events-auto">
-      <div className="relative group bg-obsidian-950/95 backdrop-blur-2xl rounded-2xl border border-neutral-800 p-4 sm:p-5 shadow-2xl transition-all duration-200 hover:border-neutral-700">
-        {/* Clear Expand Transcript Control */}
+      <div className="relative group bg-black/85 backdrop-blur-2xl rounded-2xl hairline-border p-4 sm:p-5 shadow-2xl transition-all duration-200 hover:border-white/20">
+        {/* Minimal Expand Transcript Control */}
         <button
           onClick={onExpandTranscript}
           title="Expand to Full Continuous Transcript Panel"
-          className="absolute -top-3.5 right-4 flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-obsidian-900 hover:bg-neutral-850 text-silver-200 hover:text-white text-[11px] font-semibold border border-neutral-700 hover:border-neutral-500 transition-all duration-150 active:scale-95 shadow-lg tracking-wider"
+          className="absolute -top-3.5 right-4 flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-obsidian-900 hover:bg-neutral-850 text-silver-200 hover:text-white text-[11px] font-semibold hairline-border transition-all duration-150 active:scale-95 shadow-lg tracking-wider"
         >
           <Maximize2 className="w-3 h-3 text-silver-300" />
           <span>Expand Transcript</span>
         </button>
 
-        {/* Live Captions Stream (Dark Black & Pure White/Silver Theme) */}
+        {/* Live Captions Stream with Buttery Smooth Entry (Primary Visual Priority) */}
         <div
           ref={containerRef}
           className="max-h-40 overflow-y-auto space-y-3 pr-2 scroll-smooth"
@@ -54,15 +54,15 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
             return (
               <div
                 key={item.id}
-                className="flex items-start space-x-3 text-base sm:text-lg leading-relaxed animate-fadeIn"
+                className="flex items-start space-x-3 text-base sm:text-lg leading-relaxed animate-caption-glide"
               >
-                {/* Speaker Attribution Badge */}
-                <span className="font-bold text-white shrink-0 select-none bg-neutral-900 px-2.5 py-0.5 rounded-lg border border-neutral-700 text-xs sm:text-sm tracking-wide shadow-sm">
+                {/* Minimalist Speaker Attribution Badge */}
+                <span className="font-semibold text-white shrink-0 select-none bg-white/[0.08] px-2.5 py-0.5 rounded-md border border-white/10 text-xs sm:text-sm tracking-wide shadow-sm">
                   {item.speaker_name}
                 </span>
 
                 {/* Multilingual Caption Text */}
-                <span className="text-silver-100 font-medium break-words">
+                <span className="text-silver-100 font-medium tracking-tight break-words">
                   {displayText}
                 </span>
               </div>
@@ -70,8 +70,8 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
           })}
 
           {activeSpeakerName && recentCaptions.length === 0 && (
-            <div className="flex items-center space-x-2 text-silver-matte text-sm italic py-1">
-              <Sparkles className="w-3.5 h-3.5 text-silver-400 animate-pulse" />
+            <div className="flex items-center space-x-2 text-silver-matte text-sm italic py-1 animate-caption-glide">
+              <Sparkles className="w-3.5 h-3.5 text-silver-300 animate-pulse" />
               <span className="text-silver-200 font-medium">{activeSpeakerName} is speaking...</span>
             </div>
           )}

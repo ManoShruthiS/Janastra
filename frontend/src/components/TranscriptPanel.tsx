@@ -134,7 +134,7 @@ export const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
             return (
               <div
                 key={item.id}
-                className="group flex flex-col space-y-1.5 p-3 rounded-xl bg-obsidian-900 border border-neutral-850 hover:border-neutral-750 transition duration-150"
+                className="group flex flex-col space-y-1.5 p-3 rounded-xl bg-obsidian-900 hairline-border-subtle hover:border-white/15 transition duration-150 animate-caption-glide"
               >
                 <div className="flex items-center justify-between text-xs">
                   {/* Speaker Attribution */}

@@ -126,7 +126,7 @@ export const Lobby: React.FC<LobbyProps> = ({ onJoinMeeting, initialMeetingCode 
         </div>
 
         {/* Refined Meeting Card */}
-        <div className="w-full bg-obsidian-900/90 border border-neutral-800/90 rounded-3xl p-7 sm:p-8 shadow-2xl backdrop-blur-xl">
+        <div className="w-full bg-obsidian-900/90 hairline-border rounded-3xl p-7 sm:p-8 shadow-2xl backdrop-blur-xl">
           {/* Slide Toggle Tabs */}
           <div className="relative flex bg-black p-1 rounded-2xl mb-7 border border-neutral-800/80">
             {/* Sliding Pill Indicator */}
