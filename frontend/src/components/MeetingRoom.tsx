@@ -11,7 +11,7 @@ import { useWebRTC } from '../hooks/useWebRTC';
 import { useAudioStreamer } from '../hooks/useAudioStreamer';
 import { SupportedLanguage } from '../types/meeting';
 import { getApiBaseUrl } from '../config';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, PhoneOff } from 'lucide-react';
 
 interface MeetingRoomProps {
   meetingCode: string;
@@ -169,6 +169,16 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
             )}
           </button>
         </div>
+
+        {/* Right Top Corner: Leave Meeting Button */}
+        <button
+          onClick={onLeave}
+          title="Leave Meeting"
+          className="h-9 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white border border-white/15 hover:border-white/30 transition-all duration-150 active:scale-95 flex items-center space-x-2 shadow-sm"
+        >
+          <PhoneOff className="w-4 h-4 text-neutral-300" />
+          <span className="text-xs font-bold uppercase tracking-wider text-white">Leave</span>
+        </button>
       </header>
 
       {/* Main Content Area */}

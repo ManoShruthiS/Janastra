@@ -8,8 +8,7 @@ import {
   MessageSquare,
   Users,
   Subtitles,
-  Settings,
-  PhoneOff
+  Settings
 } from 'lucide-react';
 import { SupportedLanguage } from '../types/meeting';
 
@@ -33,7 +32,7 @@ interface ControlBarProps {
   onToggleCaptions: () => void;
   onChangeLanguage: (lang: string) => void;
   onOpenSettings: () => void;
-  onLeaveMeeting: () => void;
+  onLeaveMeeting?: () => void;
 }
 
 export const ControlBar: React.FC<ControlBarProps> = ({
@@ -188,16 +187,6 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-obsidian-900 text-silver-matte border border-white/[0.08] hover:border-white/20 hover:text-white transition-all duration-150 active:scale-95"
         >
           <Settings className="w-5 h-5" />
-        </button>
-
-        {/* 8. Leave Meeting */}
-        <button
-          onClick={onLeaveMeeting}
-          title="Leave Meeting"
-          className="h-11 sm:h-12 px-4 sm:px-5 rounded-full bg-neutral-900 hover:bg-neutral-800 text-white border border-white/15 hover:border-white/30 transition-all duration-150 active:scale-95 flex items-center space-x-2 shadow-sm"
-        >
-          <PhoneOff className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-300" />
-          <span className="text-xs font-bold uppercase tracking-wider text-white">Leave</span>
         </button>
       </div>
 
