@@ -118,12 +118,13 @@ export function useMeetingSocket({
     }
   }, []);
 
-  const sendCaptionPref = useCallback((language: string, enabled: boolean) => {
+  const sendCaptionPref = useCallback((language: string, enabled: boolean, spokenLanguage?: string) => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({
         type: 'caption_pref',
         caption_language: language,
-        caption_enabled: enabled
+        caption_enabled: enabled,
+        ...(spokenLanguage ? { spoken_language: spokenLanguage } : {})
       }));
     }
   }, []);

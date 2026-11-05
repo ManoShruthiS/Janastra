@@ -1,6 +1,7 @@
 export interface Participant {
   id: string;
   display_name: string;
+  spoken_language?: string;
   caption_language: string;
   caption_enabled: boolean;
   is_muted: boolean;

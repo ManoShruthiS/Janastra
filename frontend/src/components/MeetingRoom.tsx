@@ -27,6 +27,7 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
 }) => {
   const [captionsEnabled, setCaptionsEnabled] = useState(true);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [spokenLanguage, setSpokenLanguage] = useState('en');
   const [supportedLanguages, setSupportedLanguages] = useState<SupportedLanguage[]>([]);
 
   const [isParticipantsOpen, setIsParticipantsOpen] = useState(false);
@@ -95,19 +96,25 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
     isMuted,
     meetingCode,
     participantId,
-    displayName
+    displayName,
+    spokenLanguage
   });
 
   const handleToggleCaptions = useCallback(() => {
     const nextState = !captionsEnabled;
     setCaptionsEnabled(nextState);
-    sendCaptionPref(selectedLanguage, nextState);
-  }, [captionsEnabled, selectedLanguage, sendCaptionPref]);
+    sendCaptionPref(selectedLanguage, nextState, spokenLanguage);
+  }, [captionsEnabled, selectedLanguage, spokenLanguage, sendCaptionPref]);
 
   const handleChangeLanguage = useCallback((newLang: string) => {
     setSelectedLanguage(newLang);
-    sendCaptionPref(newLang, captionsEnabled);
-  }, [captionsEnabled, sendCaptionPref]);
+    sendCaptionPref(newLang, captionsEnabled, spokenLanguage);
+  }, [captionsEnabled, spokenLanguage, sendCaptionPref]);
+
+  const handleChangeSpokenLanguage = useCallback((newSpoken: string) => {
+    setSpokenLanguage(newSpoken);
+    sendCaptionPref(selectedLanguage, captionsEnabled, newSpoken);
+  }, [selectedLanguage, captionsEnabled, sendCaptionPref]);
 
   const handleOpenParticipants = () => {
     setIsParticipantsOpen((prev) => !prev);
@@ -203,6 +210,7 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
         isParticipantsOpen={isParticipantsOpen}
         captionsEnabled={captionsEnabled}
         selectedLanguage={selectedLanguage}
+        spokenLanguage={spokenLanguage}
         supportedLanguages={supportedLanguages}
         participantCount={participants.length}
         gnaniConfigured={gnaniConfigured}
@@ -211,6 +219,7 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
         onToggleParticipants={handleOpenParticipants}
         onToggleCaptions={handleToggleCaptions}
         onChangeLanguage={handleChangeLanguage}
+        onChangeSpokenLanguage={handleChangeSpokenLanguage}
       />
     </div>
   );

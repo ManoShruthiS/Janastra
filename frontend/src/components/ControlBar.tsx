@@ -15,6 +15,7 @@ interface ControlBarProps {
   isParticipantsOpen: boolean;
   captionsEnabled: boolean;
   selectedLanguage: string;
+  spokenLanguage: string;
   supportedLanguages: SupportedLanguage[];
   participantCount: number;
   gnaniConfigured: boolean | null;
@@ -23,6 +24,7 @@ interface ControlBarProps {
   onToggleParticipants: () => void;
   onToggleCaptions: () => void;
   onChangeLanguage: (lang: string) => void;
+  onChangeSpokenLanguage: (lang: string) => void;
 }
 
 export const ControlBar: React.FC<ControlBarProps> = ({
@@ -31,6 +33,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
   isParticipantsOpen,
   captionsEnabled,
   selectedLanguage,
+  spokenLanguage,
   supportedLanguages,
   participantCount,
   gnaniConfigured,
@@ -38,7 +41,8 @@ export const ControlBar: React.FC<ControlBarProps> = ({
   onToggleCam,
   onToggleParticipants,
   onToggleCaptions,
-  onChangeLanguage
+  onChangeLanguage,
+  onChangeSpokenLanguage
 }) => {
   // Fallback if languages are still fetching from backend
   const fallbackLanguages = [
@@ -60,20 +64,41 @@ export const ControlBar: React.FC<ControlBarProps> = ({
       : fallbackLanguages;
 
   return (
-    <div className="shrink-0 flex items-center justify-between px-4 sm:px-6 py-3 bg-black/95 backdrop-blur-2xl border-t border-white/[0.08] shadow-2xl z-30 select-none">
-      {/* Left side: Caption quick language pill & individual language selector */}
-      <div className="flex items-center space-x-3 flex-1 min-w-0 justify-start">
+    <div className="shrink-0 flex items-center justify-between px-3 sm:px-6 py-3 bg-black/95 backdrop-blur-2xl border-t border-white/[0.08] shadow-2xl z-30 select-none gap-2">
+      {/* Left side: Speaking Language & Captions */}
+      <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0 justify-start">
+        {/* Speaking Language Selector */}
+        <div className="flex items-center bg-obsidian-900/90 rounded-xl px-2.5 py-1.5 border border-white/[0.08] shadow-inner text-xs">
+          <span className="text-silver-matte mr-1.5 hidden lg:inline text-[11px] font-medium uppercase tracking-wider">
+            Speaking:
+          </span>
+          <select
+            value={spokenLanguage}
+            onChange={(e) => onChangeSpokenLanguage(e.target.value)}
+            title="Language you are speaking into your microphone"
+            className="bg-transparent text-xs text-silver-100 font-medium outline-none cursor-pointer hover:text-white transition"
+          >
+            <option value="auto" className="bg-black text-silver-100">Auto (Indic)</option>
+            {langsToDisplay.map((lang) => (
+              <option key={lang.code} value={lang.code} className="bg-black text-silver-100">
+                {lang.name} ({lang.native})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Caption Toggle & Language Selector */}
         <div className="flex items-center bg-obsidian-900/90 rounded-xl p-1 border border-white/[0.08] shadow-inner">
           <button
             onClick={onToggleCaptions}
-            title={captionsEnabled ? 'Turn Captions Off (T)' : 'Turn Captions On (T)'}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wider transition-all duration-150 active:scale-95 ${
+            title={captionsEnabled ? 'Turn Captions Off' : 'Turn Captions On'}
+            className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wider transition-all duration-150 active:scale-95 ${
               captionsEnabled
                 ? 'bg-white/[0.12] text-white border border-white/20 shadow-sm'
                 : 'text-silver-matte hover:text-white hover:bg-neutral-900'
             }`}
           >
-            <Subtitles className={`w-4 h-4 ${captionsEnabled ? 'text-white' : 'text-silver-matte'}`} />
+            <Subtitles className={`w-3.5 h-3.5 ${captionsEnabled ? 'text-white' : 'text-silver-matte'}`} />
             <span>{captionsEnabled ? 'CC ON' : 'CC OFF'}</span>
           </button>
 
@@ -81,7 +106,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
             <select
               value={selectedLanguage}
               onChange={(e) => onChangeLanguage(e.target.value)}
-              title="Select your personal caption language"
+              title="Select caption language to read"
               className="bg-transparent text-xs text-silver-100 font-medium px-2 py-1 outline-none cursor-pointer border-l border-neutral-800 hover:text-white transition"
             >
               {langsToDisplay.map((lang) => (

@@ -138,17 +138,23 @@ async def meeting_websocket_endpoint(
                     )
 
             elif msg_type == "caption_pref":
-                # Participant updates their independent caption language or toggle
+                # Participant updates their independent caption language, spoken language or toggle
                 p = session.participants.get(participant_id)
                 if p:
                     if "caption_language" in data:
                         p.caption_language = data["caption_language"]
+                    if "spoken_language" in data:
+                        p.spoken_language = data["spoken_language"]
+                        stream = audio_processor_manager.get_stream(meeting_code_clean, participant_id)
+                        if stream:
+                            stream.spoken_language = data["spoken_language"]
                     if "caption_enabled" in data:
                         p.caption_enabled = bool(data["caption_enabled"])
                     # Acknowledge to sender
                     await websocket.send_json({
                         "type": "caption_pref_ack",
                         "caption_language": p.caption_language,
+                        "spoken_language": p.spoken_language,
                         "caption_enabled": p.caption_enabled
                     })
 
@@ -211,14 +217,16 @@ async def audio_websocket_endpoint(
     websocket: WebSocket,
     meeting_code: str,
     participant_id: str,
-    display_name: str = Query("Participant")
+    display_name: str = Query("Participant"),
+    spoken_lang: str = Query("auto")
 ):
     await websocket.accept()
     meeting_code_clean = meeting_code.upper().strip()
     stream = audio_processor_manager.get_or_create_stream(
         meeting_code_clean,
         participant_id,
-        display_name
+        display_name,
+        spoken_language=spoken_lang
     )
 
     try:

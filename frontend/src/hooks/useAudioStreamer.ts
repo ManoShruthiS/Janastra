@@ -7,6 +7,7 @@ interface UseAudioStreamerProps {
   meetingCode: string;
   participantId: string;
   displayName: string;
+  spokenLanguage?: string;
 }
 
 /**
@@ -51,19 +52,21 @@ export function useAudioStreamer({
   isMuted,
   meetingCode,
   participantId,
-  displayName
+  displayName,
+  spokenLanguage = 'auto'
 }: UseAudioStreamerProps) {
   const wsRef = useRef<WebSocket | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceNodeRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const processorNodeRef = useRef<ScriptProcessorNode | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
 
   // Maintain WebSocket connection to audio endpoint
   useEffect(() => {
     if (!meetingCode || !participantId) return;
 
     const wsBase = getWsBaseUrl();
-    const wsUrl = `${wsBase}/ws/audio/${encodeURIComponent(meetingCode)}/${encodeURIComponent(participantId)}?display_name=${encodeURIComponent(displayName)}`;
+    const wsUrl = `${wsBase}/ws/audio/${encodeURIComponent(meetingCode)}/${encodeURIComponent(participantId)}?display_name=${encodeURIComponent(displayName)}&spoken_lang=${encodeURIComponent(spokenLanguage)}`;
 
     const ws = new WebSocket(wsUrl);
     ws.binaryType = 'arraybuffer';
@@ -84,7 +87,7 @@ export function useAudioStreamer({
       ws.close();
       wsRef.current = null;
     };
-  }, [meetingCode, participantId, displayName]);
+  }, [meetingCode, participantId, displayName, spokenLanguage]);
 
   // Handle mute changes: flush pending buffer if muted
   useEffect(() => {
@@ -127,13 +130,21 @@ export function useAudioStreamer({
       };
 
       sourceNode.connect(processor);
-      // Connect to destination to keep processor alive
-      processor.connect(audioCtx.destination);
+      // Route through a zero-gain node before destination to prevent microphone loopback echo
+      const muteNode = audioCtx.createGain();
+      muteNode.gain.value = 0;
+      gainNodeRef.current = muteNode;
+      processor.connect(muteNode);
+      muteNode.connect(audioCtx.destination);
     } catch (err) {
       console.error('Error starting audio stream capture:', err);
     }
 
     return () => {
+      if (gainNodeRef.current) {
+        gainNodeRef.current.disconnect();
+        gainNodeRef.current = null;
+      }
       if (processorNodeRef.current) {
         processorNodeRef.current.disconnect();
         processorNodeRef.current = null;

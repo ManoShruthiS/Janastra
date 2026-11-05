@@ -5,6 +5,7 @@ import time
 class Participant(BaseModel):
     id: str
     display_name: str
+    spoken_language: str = "auto"
     caption_language: str = "en"
     caption_enabled: bool = True
     is_muted: bool = False
