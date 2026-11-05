@@ -69,18 +69,18 @@ Unlike general-purpose conferencing suites cluttered with non-essential tools, J
 
 ## ⚙️ Meeting Interface Controls
 
-JANASTRA strictly implements the 8 essential in-call meeting controls without superfluous bloat:
+JANASTRA features a distraction-free, language-first interface focused strictly on Indic speech understanding without corporate meeting bloat:
 
-| Control | Description |
-| :--- | :--- |
-| **Microphone** | Toggle mute / unmute state with audio streaming control |
-| **Camera** | Toggle video on / off with camera privacy fallback |
-| **Screen Sharing** | Stream desktop display / application window to peers |
-| **Chat** | Ephemeral, in-meeting text messaging for all participants |
-| **Participants** | Real-time participant roster showing host badge, mic/cam states, and caption language |
-| **Captions** | Toggle live captions ON/OFF and switch personal caption language |
-| **Settings** | Device selection (mic, camera), caption language selector, and engine status |
-| **Leave Meeting** | Graceful departure, peer disconnection, and session cleanup |
+| Control | Location | Description |
+| :--- | :--- | :--- |
+| **Microphone** | Center Dock | Toggle mute / unmute state with audio streaming to the Gnani engine |
+| **Camera** | Center Dock | Toggle video on / off with minimal frosted privacy avatar fallback |
+| **Participants** | Center Dock | Opens an auto-fitting floating glass card showing active attendee names |
+| **Caption Toggle (`CC`)** | Bottom Left | One-click toggle for live caption visibility |
+| **Language Selector** | Bottom Left | Individual language dropdown (English + 9 Indian languages) |
+| **Gnani AI Status** | Bottom Right | Live indicator of Gnani Prisma v3.0 STT engine authentication state |
+| **Full Transcript** | Caption Overlay | Expandable continuous transcript drawer with full-text search and `.txt` export |
+| **Leave Meeting** | Top Right | Graceful departure, peer disconnection, and session cleanup |
 
 ---
 
@@ -154,7 +154,7 @@ GNANI_LANGUAGE_CODE=indic-auto
 Start the backend server:
 ```bash
 python run.py
-# Backend runs on http://localhost:8000
+# Backend runs on http://localhost:8001
 ```
 
 ---
