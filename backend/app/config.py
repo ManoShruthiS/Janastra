@@ -2,6 +2,9 @@ from pydantic_settings import BaseSettings
 from typing import List, Dict
 import os
 
+backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+default_env_path = os.path.join(backend_dir, ".env")
+
 class Settings(BaseSettings):
     # Gnani AI Prisma v3.0
     GNANI_API_KEY: str = ""
@@ -23,7 +26,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173"
 
     class Config:
-        env_file = ".env"
+        env_file = default_env_path if os.path.exists(default_env_path) else ".env"
         env_file_encoding = "utf-8"
         extra = "ignore"
 

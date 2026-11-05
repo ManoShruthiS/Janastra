@@ -9,6 +9,43 @@ interface UseAudioStreamerProps {
   displayName: string;
 }
 
+/**
+ * Downsamples audio from any input sample rate (e.g. 48000Hz, 44100Hz) to exact 16000Hz 16-bit PCM.
+ * Uses windowed averaging (anti-aliasing) to ensure crystal clear human voice pitch for Gnani STT.
+ */
+function downsampleTo16kHz(input: Float32Array, inputSampleRate: number): Int16Array {
+  if (inputSampleRate === 16000) {
+    const pcm16 = new Int16Array(input.length);
+    for (let i = 0; i < input.length; i++) {
+      const s = Math.max(-1, Math.min(1, input[i]));
+      pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+    }
+    return pcm16;
+  }
+
+  const ratio = inputSampleRate / 16000;
+  const newLength = Math.floor(input.length / ratio);
+  const result = new Int16Array(newLength);
+  let offsetResult = 0;
+  let offsetInput = 0;
+
+  while (offsetResult < result.length) {
+    const nextOffsetInput = Math.round((offsetResult + 1) * ratio);
+    let accum = 0;
+    let count = 0;
+    for (let i = offsetInput; i < nextOffsetInput && i < input.length; i++) {
+      accum += input[i];
+      count++;
+    }
+    const val = count > 0 ? accum / count : 0;
+    const s = Math.max(-1, Math.min(1, val));
+    result[offsetResult] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+    offsetResult++;
+    offsetInput = nextOffsetInput;
+  }
+  return result;
+}
+
 export function useAudioStreamer({
   mediaStream,
   isMuted,
@@ -65,13 +102,13 @@ export function useAudioStreamer({
 
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      const audioCtx = new AudioCtx({ sampleRate: 16000 });
+      const audioCtx = new AudioCtx();
       audioContextRef.current = audioCtx;
 
       const sourceNode = audioCtx.createMediaStreamSource(mediaStream);
       sourceNodeRef.current = sourceNode;
 
-      // ScriptProcessor with 4096 buffer size (~256ms of audio at 16kHz)
+      // ScriptProcessor with 4096 buffer size
       const processor = audioCtx.createScriptProcessor(4096, 1, 1);
       processorNodeRef.current = processor;
 
@@ -80,15 +117,13 @@ export function useAudioStreamer({
         if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
 
         const inputData = e.inputBuffer.getChannelData(0);
-        // Convert Float32Array [-1.0, 1.0] to Int16Array [-32768, 32767]
-        const pcm16 = new Int16Array(inputData.length);
-        for (let i = 0; i < inputData.length; i++) {
-          const s = Math.max(-1, Math.min(1, inputData[i]));
-          pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
-        }
+        const actualSampleRate = e.inputBuffer.sampleRate || (audioContextRef.current?.sampleRate ?? 16000);
+        const pcm16 = downsampleTo16kHz(inputData, actualSampleRate);
 
-        // Send raw PCM binary frame
-        wsRef.current.send(pcm16.buffer);
+        if (pcm16.length > 0) {
+          // Send raw PCM binary frame at exact 16kHz
+          wsRef.current.send(pcm16.buffer);
+        }
       };
 
       sourceNode.connect(processor);

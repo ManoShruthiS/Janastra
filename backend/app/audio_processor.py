@@ -13,13 +13,13 @@ from app.models import CaptionItem
 logger = logging.getLogger("janastra.audio")
 
 # Energy threshold for silence detection (16-bit PCM scale is -32768 to 32767)
-ENERGY_THRESHOLD = 350
+ENERGY_THRESHOLD = 200
 # Max duration of a speech segment in seconds before forcing transcription
-MAX_SPEECH_DURATION_SEC = 5.0
+MAX_SPEECH_DURATION_SEC = 4.5
 # Silence duration in seconds to consider speech turn finished
-SILENCE_DURATION_SEC = 0.8
+SILENCE_DURATION_SEC = 0.7
 # Min audio duration to send for ASR (avoid noise blips)
-MIN_AUDIO_DURATION_SEC = 0.5
+MIN_AUDIO_DURATION_SEC = 0.35
 SAMPLE_RATE = 16000
 BYTES_PER_SAMPLE = 2  # 16-bit
 BYTES_PER_SECOND = SAMPLE_RATE * BYTES_PER_SAMPLE
@@ -117,19 +117,27 @@ class ParticipantAudioStream:
         source_lang = "auto"
         if asr_result:
             # Parse Gnani response schema
-            # Gnani STT v3 typically returns:
-            # {"transcript": "..."} or {"text": "..."} or {"data": {"transcript": "..."}}
+            # Gnani STT v3 returns:
+            # {"transcript": "...", "detected_language_code": "hi-IN", ...}
             text = (
                 asr_result.get("transcript")
                 or asr_result.get("text")
                 or (asr_result.get("data", {}).get("transcript") if isinstance(asr_result.get("data"), dict) else "")
                 or ""
             )
-            source_lang = asr_result.get("language_code") or asr_result.get("language") or "auto"
+            raw_lang = (
+                asr_result.get("detected_language_code")
+                or asr_result.get("language_code")
+                or asr_result.get("language")
+                or "auto"
+            )
+            source_lang = raw_lang.split("-")[0].lower() if raw_lang != "auto" else "auto"
 
         if not text.strip():
             logger.debug(f"No speech recognized for {self.display_name}")
             return
+
+        logger.info(f"Recognized speech from {self.display_name}: '{text}' (detected language: {source_lang})")
 
         session = meeting_manager.get_meeting(self.meeting_code)
         if not session:
@@ -144,6 +152,7 @@ class ParticipantAudioStream:
             detected_source_lang=source_lang,
             target_languages=target_languages
         )
+        logger.info(f"Translated captions for {self.display_name}: {translations}")
 
         caption_item = CaptionItem(
             id=str(uuid.uuid4()),
