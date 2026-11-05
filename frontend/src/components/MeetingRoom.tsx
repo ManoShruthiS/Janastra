@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { VideoGrid } from './VideoGrid';
 import { ControlBar } from './ControlBar';
 import { CaptionOverlay } from './CaptionOverlay';
-import { TranscriptPanel } from './TranscriptPanel';
 import { ParticipantsPanel } from './ParticipantsPanel';
 import { useMeetingSocket } from '../hooks/useMeetingSocket';
 import { useWebRTC } from '../hooks/useWebRTC';
@@ -30,7 +29,6 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [supportedLanguages, setSupportedLanguages] = useState<SupportedLanguage[]>([]);
 
-  const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const [isParticipantsOpen, setIsParticipantsOpen] = useState(false);
 
   const [copiedCode, setCopiedCode] = useState(false);
@@ -177,27 +175,15 @@ export const MeetingRoom: React.FC<MeetingRoomProps> = ({
             participants={participants}
           />
 
-          {/* Continuous Bottom Caption Overlay (Primary Hero) */}
-          {captionsEnabled && !isTranscriptOpen && (
+          {/* Clean Live Multilingual Caption Subtitle (Single Active Line, No Scrollable Backlog) */}
+          {captionsEnabled && (
             <CaptionOverlay
               captions={captions}
               selectedLanguage={selectedLanguage}
-              onExpandTranscript={() => setIsTranscriptOpen(true)}
               activeSpeakerName={activeSpeaker?.display_name}
             />
           )}
         </div>
-
-        {/* Expandable / Collapsible Multilingual Transcript Panel */}
-        {isTranscriptOpen && (
-          <TranscriptPanel
-            captions={captions}
-            selectedLanguage={selectedLanguage}
-            supportedLanguages={supportedLanguages}
-            onClose={() => setIsTranscriptOpen(false)}
-            onChangeLanguage={handleChangeLanguage}
-          />
-        )}
 
         {/* Compact Auto-Fitting Floating Participants Card */}
         {isParticipantsOpen && (
