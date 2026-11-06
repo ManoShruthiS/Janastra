@@ -15,9 +15,9 @@
 **JANASTRA** is a purpose-built multilingual online meeting platform whose core mission is to provide **accurate, real-time, speaker-attributed captions in each participant's individually selected language**.
 
 Unlike general-purpose conferencing suites cluttered with non-essential tools, JANASTRA concentrates engineering precision on:
-1. **Low-Latency Speech Recognition** via Gnani AI Prisma v3.0.
-2. **True Language Isolation**: One participant's caption settings never affect another. A speaker can speak in Hindi or English, while Participant A reads captions in Tamil, Participant B in Kannada, and Participant C in Hindi.
-3. **Continuous Speaker Attribution**: Every single caption line preserves the original speaker's display name (`Speaker: <Translated Text>`).
+1. **Low-Latency Speech Recognition** via Gnani AI Prisma v3.0 with specialized Indic acoustic modeling.
+2. **True Language Isolation**: One participant's caption settings never affect another. A speaker can speak in English or Tamil, while Participant A reads captions in Hindi, Participant B in Kannada, and Participant C in English.
+3. **Continuous Speaker Attribution & Language Badges**: Every single subtitle line identifies the speaker and language transition (`[Speaker] [EN → HI] Translated text`).
 4. **Frictionless Access**: Zero login, registration, or permanent profiles. Participants join instantly with a unique meeting code and display name.
 
 ---
@@ -35,11 +35,12 @@ Unlike general-purpose conferencing suites cluttered with non-essential tools, J
                                                   ▼
                                   ┌────────────────────────────────┐
                                   │      FastAPI Audio Engine      │
-                                  │   - Real-time VAD & Buffering  │
+                                  │   - Noise-Tuned VAD Buffer     │
+                                  │   - Pre-roll Syllable Guard    │
                                   └───────────────┬────────────────┘
                                                   │
-                 wss://api.vachana.ai/stt/v3/stream (or REST fallback)
-                 Header: X-API-Key-ID, Model: prisma-v3.0, Lang: indic-auto
+                 Targeted Language Code (e.g. en-IN, ta-IN, hi-IN)
+                 POST https://api.vachana.ai/stt/v3 (Gnani Prisma v3.0)
                                                   ▼
                                   ┌────────────────────────────────┐
                                   │     Gnani AI Prisma v3.0       │
@@ -59,9 +60,9 @@ Unlike general-purpose conferencing suites cluttered with non-essential tools, J
                │                                                                     │
                ▼                                                                     ▼
 ┌─────────────────────────────┐                                     ┌─────────────────────────────┐
-│ Participant A (Target: ta)  │                                     │ Participant B (Target: kn)  │
+│ Participant A (Target: ta)  │                                     │ Participant B (Target: hi)  │
 │ Display:                    │                                     │ Display:                    │
-│ "Ram: வணக்கம், கூட்டத்தைத்..." │                                     │ "Ram: ನಮಸ್ಕಾರ, ಸಭೆಯನ್ನು..."  │
+│ "Mahi [EN → TA] வணக்கம்..." │                                     │ "Mahi [EN → HI] नमस्ते..."   │
 └─────────────────────────────┘                                     └─────────────────────────────┘
 ```
 
@@ -69,47 +70,45 @@ Unlike general-purpose conferencing suites cluttered with non-essential tools, J
 
 ## ⚙️ Meeting Interface Controls
 
-JANASTRA features a distraction-free, language-first interface focused strictly on Indic speech understanding without corporate meeting bloat:
+JANASTRA features a distraction-free, language-first interface focused strictly on Indic speech understanding:
 
 | Control | Location | Description |
 | :--- | :--- | :--- |
-| **Microphone** | Center Dock | Toggle mute / unmute state with audio streaming to the Gnani engine |
+| **Speaking Selector** | Bottom Left Dock | Select your spoken microphone language (`English`, `Tamil`, `Hindi`, `Auto`) for acoustic accuracy |
+| **Caption Toggle (`CC`)** | Bottom Left Dock | One-click toggle to show or hide live floating captions |
+| **Caption Language** | Bottom Left Dock | Select your independent subtitle target language (English + 9 Indian languages) |
+| **Microphone** | Center Dock | Toggle mute / unmute with anti-aliasing 16kHz PCM streaming to Gnani |
 | **Camera** | Center Dock | Toggle video on / off with minimal frosted privacy avatar fallback |
-| **Participants** | Center Dock | Opens an auto-fitting floating glass card showing active attendee names |
-| **Caption Toggle (`CC`)** | Bottom Left | One-click toggle for live caption visibility |
-| **Language Selector** | Bottom Left | Individual language dropdown (English + 9 Indian languages) |
-| **Gnani AI Status** | Bottom Right | Live indicator of Gnani Prisma v3.0 STT engine authentication state |
-| **Full Transcript** | Caption Overlay | Expandable continuous transcript drawer with full-text search and `.txt` export |
-| **Leave Meeting** | Top Right | Graceful departure, peer disconnection, and session cleanup |
+| **Participants** | Center Dock | Auto-fitting floating card showing active attendees and their current caption languages |
+| **Gnani AI Status** | Bottom Right Dock | Live indicator of Gnani Prisma v3.0 STT engine authentication state |
+| **Live Subtitle Pill** | Center Overlay | Single active floating subtitle showing speaker, language badge (`[EN → HI]`), and translation |
+| **Leave Meeting** | Top Right Header | Graceful departure, peer disconnection, and session cleanup |
 
 ---
 
-## 💬 Caption & Translation Capabilities
+## 💬 Supported Languages
 
-- **Isolated Preferences**: Captions are controlled locally per participant. Turning captions off or switching language on your screen has **zero** effect on other participants.
-- **Continuous Scroll**: Captions continuously render and scroll at the bottom overlay of the video screen.
-- **Expandable Transcript**: Click **"Full Transcript"** or the transcript toggle to view the entire timestamped meeting history with full-text search and `.txt` export.
-- **Supported Languages**:
-  - English (`en`)
-  - Hindi (`hi` - हिन्दी)
-  - Tamil (`ta` - தமிழ்)
-  - Kannada (`kn` - ಕನ್ನಡ)
-  - Telugu (`te` - తెలుగు)
-  - Bengali (`bn` - বাংলা)
-  - Marathi (`mr` - मराठी)
-  - Gujarati (`gu` - ગુજરાતી)
-  - Malayalam (`ml` - മലയാളം)
-  - Punjabi (`pa` - ਪੰਜਾਬੀ)
+Gnani Prisma v3.0 natively handles English + 9 major Indian languages:
+- **English** (`en`)
+- **Hindi** (`hi` - हिन्दी)
+- **Tamil** (`ta` - தமிழ்)
+- **Kannada** (`kn` - ಕನ್ನಡ)
+- **Telugu** (`te` - తెలుగు)
+- **Bengali** (`bn` - বাংলা)
+- **Marathi** (`mr` - मराठी)
+- **Gujarati** (`gu` - ગુજરાતી)
+- **Malayalam** (`ml` - മലയാളം)
+- **Punjabi** (`pa` - ਪੰਜਾਬੀ)
 
 ---
 
 ## 🤖 Gnani AI Prisma v3.0 Integration
 
-- **Endpoint**: `wss://api.vachana.ai/stt/v3/stream` (Streaming WebSocket) & `https://api.vachana.ai/stt/v3` (REST chunk endpoint).
+- **Endpoint**: `https://api.vachana.ai/stt/v3` (REST chunk endpoint) & `wss://api.vachana.ai/stt/v3/stream` (Streaming WebSocket).
 - **Authentication**: `X-API-Key-ID: <GNANI_API_KEY>`
 - **Model**: `prisma-v3.0`
-- **Language Detection**: `indic-auto` (automated language identification across 9 Indic languages + English with code-mixed support).
 - **Audio Specification**: 16-bit Linear PCM, 16 kHz sample rate, mono.
+- **VAD & Audio Pre-roll**: 480 RMS energy threshold (noise rejection), 1.2s silence turn completion, and 350ms pre-speech rolling buffer.
 - **Security**: The Gnani API key is securely stored in `backend/.env` and **never** exposed to client-side code.
 
 ---
@@ -117,7 +116,7 @@ JANASTRA features a distraction-free, language-first interface focused strictly 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Python 3.10+** (tested on Python 3.14)
+- **Python 3.10+**
 - **Node.js 18+** & npm
 
 ---
@@ -136,10 +135,6 @@ python -m venv venv
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Configure environment variables
-# Copy .env.example to .env and configure your Gnani credentials:
-copy .env.example .env
 ```
 
 Edit `backend/.env`:
@@ -174,19 +169,34 @@ npm run dev
 
 ---
 
+### 3. Automated End-to-End Verification Test
+
+To verify speech recognition with Gnani Prisma v3.0 and real-time translation automatically:
+
+```bash
+python test_e2e_audio_translation.py
+```
+
+This streams audio directly into the live WebSocket pipeline and verifies the live caption broadcast with Hindi and Tamil translations.
+
+---
+
 ## 📋 User Flow
 
 1. **Host Meeting**: Enter your display name and click **"Start New Meeting"**.
 2. **Share Code**: The platform generates a unique code (e.g. `JAN-842-195`). Share it with participants or copy the direct link.
 3. **Join Meeting**: Other participants enter the code and their display names (no registration, password, or permanent profile).
-4. **Select Language**: Once joined, participants can independently toggle captions and select their preferred language from the bottom control bar or settings.
+4. **Choose Languages**:
+   - Set **Speaking** to your spoken language (e.g. `English` or `Tamil`).
+   - Set **Captions** to your desired reading language (e.g. `Hindi` or `Tamil`).
+5. **Speak Naturally**: Live translated subtitles float gracefully on screen with speaker attribution and direction badges like `[Mahi] [EN → HI] नमस्ते...`.
 
 ---
 
 ## 🔒 Security & Privacy
 
 - All API credentials remain isolated in the server-side environment.
-- Temporary session state: No audio is stored to disk; transcripts and participant lists are cleared when the meeting ends.
+- Ephemeral in-memory state: No audio is recorded or stored on disk; meetings are automatically cleaned up when all participants disconnect.
 - Direct peer-to-peer WebRTC video and audio channels.
 
 ---
