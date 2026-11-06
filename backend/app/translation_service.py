@@ -58,19 +58,47 @@ class TranslationService:
         return cleaned
 
     def _execute_translation(self, text: str, src: str, tgt: str) -> str:
-        """Attempts translation with Google, falling back to MyMemory or configured provider."""
-        # 1. Try Google Translator via deep_translator
+        """Fast, robust translation with latency logging and multi-engine fallback."""
+        start_t = time.time()
+        
+        # 1. Primary: Direct high-speed Google GTX endpoint (sub-200ms latency)
+        try:
+            import httpx
+            source = "auto" if src == "auto" else src
+            url = "https://translate.googleapis.com/translate_a/single"
+            params = {
+                "client": "gtx",
+                "sl": source,
+                "tl": tgt,
+                "dt": "t",
+                "q": text
+            }
+            with httpx.Client(timeout=8.0) as client:
+                res = client.get(url, params=params)
+                if res.status_code == 200:
+                    data = res.json()
+                    translated = "".join([part[0] for part in data[0] if part and part[0]])
+                    if translated and translated.strip():
+                        duration_ms = (time.time() - start_t) * 1000
+                        logger.info(f"Translated '{text[:30]}...' ({src} -> {tgt}) in {duration_ms:.1f}ms: '{translated[:30]}...'")
+                        return translated
+        except Exception as e:
+            logger.debug(f"Direct Google GTX failed: {e}")
+
+        # 2. Secondary fallback: deep_translator GoogleTranslator
         try:
             from deep_translator import GoogleTranslator
             source = "auto" if src == "auto" else src
             translator = GoogleTranslator(source=source, target=tgt)
             res = translator.translate(text)
             if res and res.strip():
+                duration_ms = (time.time() - start_t) * 1000
+                logger.info(f"GoogleTranslator fallback ({src} -> {tgt}) in {duration_ms:.1f}ms: '{res[:30]}...'")
                 return res
         except Exception as e:
-            logger.debug(f"GoogleTranslator attempt failed, falling back to MyMemory: {e}")
+            logger.debug(f"GoogleTranslator fallback failed: {e}")
 
-        # 2. Fallback: MyMemory Translator
+        # 3. Tertiary fallback: MyMemory Translator
         try:
             from deep_translator import MyMemoryTranslator
             mm_src = MYMEMORY_MAP.get(src, "en-US") if src != "auto" else "en-US"
@@ -90,23 +118,33 @@ class TranslationService:
         detected_source_lang: str,
         target_languages: Set[str]
     ) -> Dict[str, str]:
-        """Translates text for all unique target languages in the meeting room."""
+        """Translates text for all unique target languages in the meeting room concurrently."""
         if not text.strip():
             return {}
 
         results: Dict[str, str] = {}
-        target_list = list(target_languages)
+        clean_src = detected_source_lang.split("-")[0].lower() if detected_source_lang != "auto" else "auto"
 
-        # Sequential translation across distinct target languages to avoid bursting free endpoints
-        for lang in target_list:
+        # Translate in parallel for low latency across all participant languages
+        tasks = []
+        target_codes = []
+        for lang in target_languages:
             clean_code = lang.split("-")[0].lower()
-            try:
-                translated = await self.translate_single(text, detected_source_lang, clean_code)
-                results[clean_code] = translated
-            except Exception as e:
-                logger.error(f"Error translating for {lang}: {e}")
+            if clean_code == clean_src:
                 results[clean_code] = text
+            else:
+                tasks.append(self.translate_single(text, clean_src, clean_code))
+                target_codes.append(clean_code)
 
+        if tasks:
+            translated_list = await asyncio.gather(*tasks, return_exceptions=True)
+            for code, trans in zip(target_codes, translated_list):
+                if isinstance(trans, str) and trans.strip():
+                    results[code] = trans
+                else:
+                    results[code] = text
+
+        results[clean_src] = text
         return results
 
 translation_service = TranslationService()
