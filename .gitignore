@@ -1,6 +1,7 @@
 # Environment variables & secrets
 .env
 .env.local
+backend/.env
 
 # Python
 venv/
@@ -13,12 +14,20 @@ env/
 *.egg-info/
 dist/
 build/
+.pytest_cache/
 
 # Node & Frontend
 node_modules/
 frontend/node_modules/
 frontend/dist/
 *.tsbuildinfo
+
+# Demos & Temporary Media
+recorded_demos/
+demo_audio/
+*.webm
+*.mp4
+*.wav
 
 # IDE & OS
 .vscode/

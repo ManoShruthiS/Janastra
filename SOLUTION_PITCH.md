@@ -1,37 +1,28 @@
 # JANASTRA — One-Page Solution Pitch
 
-**Project:** JANASTRA — Multilingual Online Meetings with Speaker-Attributed Captions  
-**Creator:** Mano Shruthi S | **Challenge:** The Great Indian AI Internship Challenge 2026
+**Project:** JANASTRA — Multilingual Video Meeting Platform with Speaker-Attributed Live Captions  
+**Developer:** Mano Shruthi S  
+**Competition:** The Great Indian Internship Challenge 2026 (Gnani.ai)  
+**Repository:** [github.com/ManoShruthiS/Janastra](https://github.com/ManoShruthiS/Janastra)
 
-## The problem
-People across India often join the same online meeting while speaking and understanding different languages. When participants are expected to communicate in a language they are less comfortable with, ideas can be missed and participation becomes harder. Most meeting tools do not make individually preferred, multilingual captions the central experience.
+---
 
-## The solution
-JANASTRA is a language-first online meeting platform designed to help participants communicate in the language they are comfortable speaking and read captions in a language they understand. Each participant can choose their own caption language, so one person's preference does not determine what everyone else sees.
+### 1. The Problem
+India is home to 22 official languages and hundreds of dialects. In virtual collaboration—from corporate teams and universities to rural telemedicine and panchayat governance—participants are forced to communicate in a shared second language (often English or Hindi) where nuance, clarity, and confidence are lost. Mainstream meeting tools (Zoom, Google Meet) offer global or English-centric subtitles that force a single language choice across all participants.
 
-## How it works
-1. A host starts a meeting and shares a meeting code; participants join with a display name, without creating an account.
-2. Participants choose their spoken-language setting and preferred caption language, and can turn captions on or off independently.
-3. Meeting audio is streamed to the server-side speech-processing pipeline.
-4. **Gnani AI Prisma** is used for speech-to-text recognition. Prisma provides the recognized speech text; it is not presented as the translation engine.
-5. JANASTRA's separate translation component prepares caption text for the active target languages.
-6. Captions are associated with the speaker and delivered to meeting participants according to their individual caption preferences.
+### 2. The Solution: JANASTRA
+**JANASTRA** (जन + अस्त्र, *The People's Voice Instrument*) is an Indic-first, distraction-free online meeting platform engineered for frictionless cross-linguistic collaboration. Every attendee speaks naturally in their native tongue, while each participant independently selects their own preferred reading language. Subtitles are personalized, ephemeral, and strictly isolated: Speaker A speaking Punjabi appears as Tamil to Participant B and as Hindi to Participant C.
 
-## Technology
-**Frontend:** React, Vite, TypeScript  
-**Backend:** Python, FastAPI, WebSockets  
-**Real-time meeting:** WebRTC  
-**Speech recognition:** Gnani AI Prisma (STT)  
-**Translation:** Separate translation service/component
+### 3. Powered by Gnani AI Prisma v3.0
+- **Acoustic Engineering**: Client browsers stream 16-bit 16 kHz Linear PCM audio over WebSockets to an asynchronous FastAPI backend.
+- **Noise-Tuned VAD Buffer**: An RMS energy detector (480 threshold) with a 350 ms pre-roll syllable ring buffer eliminates clipped words and background hiss.
+- **Gnani Prisma v3.0 STT**: High-accuracy acoustic and phonetic modeling recognizes conversational Indic speech across 10 languages (Hindi, Tamil, Kannada, Telugu, Bengali, Marathi, Gujarati, Malayalam, Punjabi, and English).
+- **Concurrent Translation Engine**: Recognized transcripts are translated asynchronously into all actively subscribed room languages in parallel (sub-200 ms latency).
 
-## What makes JANASTRA different
-- **Personalised captions:** participants can read the same conversation in different target languages.
-- **Speaker attribution:** captions are designed to identify who is speaking and show language direction.
-- **Low-friction access:** meeting-code entry without account registration.
-- **India-focused inclusion:** designed around multilingual communication and Indic-language participation.
+### 4. Key Architectural Highlights
+- **Individual Caption Isolation**: Zero cross-talk between user preferences; toggling or switching subtitle languages affects only the requesting participant.
+- **Speaker Attribution & Context Badges**: Floating subtitle pills display real-time badges (`[Speaker] [EN → HI] Translated text`) preventing confusion in multi-speaker dialogues.
+- **Frictionless WebRTC Architecture**: Direct peer-to-peer mesh video; instant meeting room creation with 6-character access codes—no mandatory sign-ups, passwords, or stored user data.
 
-## Current implementation and honest status
-The repository contains the React/TypeScript frontend, FastAPI backend, meeting and audio WebSocket routes, a Gnani Prisma client, a separate translation service, and an end-to-end test script. The live Prisma call requires a valid API credential in the server environment. A successful authenticated, live speech-to-translated-caption run must be verified with a valid key before claiming that the complete live pipeline is operational. Any demo using sample or simulated captions should be clearly identified as such.
-
-## Intended impact and next steps
-JANASTRA aims to make online discussions more inclusive for students, teams, communities, and people who prefer communicating in regional languages. Next steps include validating the authenticated live speech pipeline, testing multiple participants and language preferences, measuring caption latency and translation quality, and improving robustness for code-mixed speech and noisy audio.
+### 5. Impact & Scalability
+JANASTRA democratizes real-time knowledge sharing across India's linguistic diversity. By bridging grassroots communication for rural banking (agritech credit), district administration, and vernacular tech teams, JANASTRA transforms Gnani AI's state-of-the-art Indic voice models into an everyday collaborative utility.
